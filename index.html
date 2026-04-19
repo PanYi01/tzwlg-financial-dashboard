@@ -169,6 +169,30 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 @media(max-width:1100px){.main{grid-template-columns:1fr 1fr}.cg{grid-template-columns:1fr}.sg{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.main{grid-template-columns:1fr;padding:12px}.sg{grid-template-columns:1fr}.ag{grid-template-columns:1fr}.hdr-t{font-size:14px}}
 
+/* WTI Scrollable Chart */
+/* WTI Chart Scrollable Container */
+.wti-chart-wrap{position:relative;overflow:hidden;cursor:crosshair;touch-action:none}
+.wti-scroll-container{overflow:hidden;width:100%;line-height:0}
+.wti-scroll-container svg{width:1200px;height:300px;display:block}
+/* Hover Tooltip */
+.wti-tooltip{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(8,12,15,0.95);border:1px solid var(--bdb);border-radius:3px;padding:8px 12px;pointer-events:none;z-index:20;min-width:120px;text-align:center;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+.wti-tt-date{font-size:10px;color:var(--td);font-family:var(--sf);margin-bottom:4px;letter-spacing:0.05em}
+.wti-tt-price{font-size:22px;font-weight:900;color:var(--a);font-family:var(--sf);line-height:1;margin-bottom:4px;text-shadow:0 0 15px rgba(245,166,35,0.3)}
+.wti-tt-ma{font-size:9px;color:var(--g);margin-bottom:2px}
+.wti-tt-band{font-size:9px;color:var(--td);margin-bottom:2px}
+.wti-tt-pos{font-size:9px;color:var(--bl);margin-top:2px;font-weight:700;letter-spacing:0.05em}
+/* Crosshair */
+.wti-crosshair{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.15);pointer-events:none;z-index:10;transition:left 0.05s linear}
+/* Scrollbar */
+.wti-scrollbar-wrap{padding:6px 0 2px;position:relative}
+.wti-scrollbar{display:flex;align-items:center;gap:12px}
+.wti-scrollbar-track{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;position:relative;cursor:grab;overflow:visible}
+.wti-scrollbar-track:active{cursor:grabbing}
+.wti-scrollbar-thumb{position:absolute;top:50%;transform:translateY(-50%);left:0;height:12px;min-width:60px;max-width:400px;background:var(--a);border-radius:6px;cursor:grab;transition:background 0.2s;box-shadow:0 0 8px rgba(245,166,35,0.4)}
+.wti-scrollbar-thumb:hover{background:var(--g);box-shadow:0 0 12px rgba(0,229,160,0.5)}
+.wti-scrollbar-thumb:active{cursor:grabbing;background:var(--g)}
+.wti-scrollbar-hint{font-size:9px;color:var(--td);white-space:nowrap;letter-spacing:0.05em;padding:0 4px}
+
 /* Stock recommendation cards */
 .stk-card{padding:0;overflow:hidden;grid-column:1 !important}
 .stk-card .chdr{padding:14px 16px 10px;margin-bottom:0}
@@ -662,14 +686,11 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
   
   </div>
-  <div class="card wti-card">
+    <div class="card wti-card">
     <div class="chdr">
       <div class="ct">🛢 WTI 原油 · 布林带套利区间（自伊朗开战次日 2024-04-15 起）</div>
       <div class="cb bo">BBands ±2σ · N=20 · EIA 数据</div>
     </div>
-    <div class="wti-meta">
-      <div class="wti-s"><div class="wti-sl">WTI 收盘价</div><div class="wti-sv" id="wti-cur
-
     <div class="wti-meta">
       <div class="wti-s"><div class="wti-sl">WTI 收盘价</div><div class="wti-sv" id="wti-cur" style="color:var(--a)">$--</div></div>
       <div class="wti-div"></div>
@@ -697,112 +718,33 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="li2"><div class="la2" style="background:rgba(255,107,122,0.1)"></div>套利通道</div>
       <div class="li2" style="margin-left:auto;color:var(--r);font-weight:700">⚑ 伊朗开战次日 2024-04-15</div>
     </div>
-    <div id="wti-wrap">
-      <svg id="wti-svg" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid meet">
-        <text x="600" y="150" text-anchor="middle" fill="#6a8a9a" font-family="Space Mono,monospace" font-size="13">正在加载 WTI 布林带图表...</text>
-      </svg>
+    <div class="wti-chart-wrap" id="wti-chart-wrap">
+      <div class="wti-scroll-container" id="wti-scroll-container">
+        <svg id="wti-svg" viewBox="0 0 1200 300" preserveAspectRatio="none" width="1200" height="300">
+          <text x="600" y="150" text-anchor="middle" fill="#6a8a9a" font-family="Space Mono,monospace" font-size="13">正在加载 WTI 布林带图表...</text>
+        </svg>
+      </div>
+      <!-- Hover tooltip -->
+      <div class="wti-tooltip" id="wti-tooltip" style="display:none">
+        <div class="wti-tt-date" id="wti-tt-date">--</div>
+        <div class="wti-tt-price" id="wti-tt-price">$--</div>
+        <div class="wti-tt-ma">MA20: <span id="wti-tt-ma">--</span></div>
+        <div class="wti-tt-band">上轨: <span id="wti-tt-ub">--</span> 下轨: <span id="wti-tt-lb">--</span></div>
+        <div class="wti-tt-pos" id="wti-tt-pos">--</div>
+      </div>
+      <!-- Crosshair line -->
+      <div class="wti-crosshair" id="wti-crosshair" style="display:none"></div>
+    </div>
+    <!-- Scrollbar -->
+    <div class="wti-scrollbar-wrap">
+      <div class="wti-scrollbar" id="wti-scrollbar">
+        <div class="wti-scrollbar-track">
+          <div class="wti-scrollbar-thumb" id="wti-thumb"></div>
+        </div>
+        <div class="wti-scrollbar-hint">← 左右拖动滚动 · 鼠标悬停查看价格 →</div>
+      </div>
     </div>
     <div class="wti-ft">数据来源: EIA Cushing OK WTI Spot Price FOB ($/桶) · 自伊朗袭击以色列次日(2024-04-15)起 · 布林带参数: N=20, σ=2 · <span id="wti-note">--</span></div>
-  </div>
-
-<!--  -->
-  <div class="card stk-card">
-    <div class="chdr">
-      <div class="ct">🇭🇰 港股精选（卢麒元「一板斧」MACD筛选）</div>
-      <div class="cb bw">港股核心资产 · MACD强势信号</div>
-    </div>
-    <div class="stk-list">
-      <div class="stk-row" data-score="8">
-        <div class="stk-rank">1</div>
-        <div class="stk-info">
-          <div class="stk-name">腾讯控股</div>
-          <div class="stk-symbol">0700.HK</div>
-        </div>
-        <div class="stk-price">
-          <div class="stk-pval">HK$510.50</div>
-          <div class="stk-sdate">04-17收盘</div>
-        </div>
-        <div class="stk-tip">
-          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐⭐ 强势推荐</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线上升 · 日线突破</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as ss">港股核心</span><span class="as sw">互联网科技</span></div></div>
-          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>港股科技龙头，AI+微信生态驱动，游戏/金融科技估值修复</div>
-        </div>
-      </div>
-      <div class="stk-row" data-score="8">
-        <div class="stk-rank">2</div>
-        <div class="stk-info">
-          <div class="stk-name">港交所</div>
-          <div class="stk-symbol">0388.HK</div>
-        </div>
-        <div class="stk-price">
-          <div class="stk-pval">HK$408.60</div>
-          <div class="stk-sdate">04-17收盘</div>
-        </div>
-        <div class="stk-tip">
-          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐⭐ 强势推荐</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线上升 · 日线蓄势</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as ss">港股核心</span><span class="as sw">金融服务</span></div></div>
-          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>A股港股互联互通深化受益，IPO回暖+成交额复苏直接受益</div>
-        </div>
-      </div>
-      <div class="stk-row" data-score="7">
-        <div class="stk-rank">3</div>
-        <div class="stk-info">
-          <div class="stk-name">小米集团</div>
-          <div class="stk-symbol">1810.HK</div>
-        </div>
-        <div class="stk-price">
-          <div class="stk-pval">HK$32.00</div>
-          <div class="stk-sdate">04-17收盘</div>
-        </div>
-        <div class="stk-tip">
-          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 重点关注</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线修复 · 日线筑底</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as sb">重点关注</span><span class="as sw">消费电子+汽车</span></div></div>
-          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>小米SU7交付超预期，IoT生态+汽车双轮驱动，低估值高弹性</div>
-        </div>
-      </div>
-      <div class="stk-row" data-score="7">
-        <div class="stk-rank">4</div>
-        <div class="stk-info">
-          <div class="stk-name">工商银行(H)</div>
-          <div class="stk-symbol">1398.HK</div>
-        </div>
-        <div class="stk-price">
-          <div class="stk-pval">HK$7.03</div>
-          <div class="stk-sdate">04-17收盘</div>
-        </div>
-        <div class="stk-tip">
-          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 重点关注</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线上升 · 日线上升中</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as sb">重点关注</span><span class="as sh">银行高股息</span></div></div>
-          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>AH溢价收窄+高股息优势，南向资金持续流入配置</div>
-        </div>
-      </div>
-      <div class="stk-row" data-score="7">
-        <div class="stk-rank">5</div>
-        <div class="stk-info">
-          <div class="stk-name">阿里巴巴</div>
-          <div class="stk-symbol">9988.HK</div>
-        </div>
-        <div class="stk-price">
-          <div class="stk-pval">HK$138.00</div>
-          <div class="stk-sdate">04-17收盘</div>
-        </div>
-        <div class="stk-tip">
-          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 重点关注</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线修复 · 日线反弹</div></div>
-          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as sb">重点关注</span><span class="as sw">互联网电商</span></div></div>
-          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>电商+AI云计算双主业，估值处于历史低位，回购力度史上最大</div>
-        </div>
-      </div>
-    </div>
-    <div class="stk-footer">
-      <span>📊 数据截至 2026-04-17 收盘</span>
-      <span>港股筛选说明：严格三重共振仅工商银行(H)通过，补充强势信号标的供参考</span>
-      <span class="stk-warn">⚠️ 仅供参考，不构成投资建议</span>
-    </div>
   </div>
 
   <div class="dc">
@@ -910,19 +852,33 @@ setTimeout(()=>{
 },300);
 
 // ══ DRAW WTI BOLLINGER BAND CHART (SVG, pure JS, 496 data points) ══
-function drawWTI(){
+
+// ══ ENHANCED WTI CHART (Scrollable + Hover Tooltip + Drag) ══
+function drawWTIChart(){
   const svg=document.getElementById('wti-svg');
+  const wrap=document.getElementById('wti-chart-wrap');
+  const container=document.getElementById('wti-scroll-container');
+  const tooltip=document.getElementById('wti-tooltip');
+  const thumb=document.getElementById('wti-thumb');
+  const track=document.querySelector('.wti-scrollbar-track');
+  const crosshair=document.getElementById('wti-crosshair');
   const data=WTI_DATA;
+  if(!svg||!data||!data.length)return;
+  const s=WTI_SUM;
+
+  // SVG chart dimensions
+  const SVG_W=1200,SVG_H=300;
   const P={t:25,r:15,b:38,l:60};
-  const W=1200,H=300;
-  const cW=W-P.l-P.r,cH=H-P.t-P.b;
-  // Y range
-  const allVals=[...data.map(d=>d.ub).filter(Boolean),...data.map(d=>d.lb).filter(Boolean)];
-  const yMin=Math.floor(Math.min(...allVals)/5)*5-5;
-  const yMax=Math.ceil(Math.max(...allVals)/5)*5+5;
+  const cW=SVG_W-P.l-P.r,cH=SVG_H-P.t-P.b;
+
+  // Y range from data
+  const allV=[...data.map(d=>d.ub).filter(Boolean),...data.map(d=>d.lb).filter(Boolean)];
+  const yMin=Math.floor(Math.min(...allV)/5)*5-5;
+  const yMax=Math.ceil(Math.max(...allV)/5)*5+5;
   const yRange=yMax-yMin;
   const xS=i=>P.l+i/(data.length-1)*cW;
   const yS=v=>P.t+cH-(v-yMin)/yRange*cH;
+
   // Build paths
   let pricePath='',areaPath='M '+P.l+','+(P.t+cH),ubPath='',lbPath='';
   data.forEach((d,i)=>{
@@ -930,10 +886,11 @@ function drawWTI(){
     pricePath+=(i===0?'M ':'L')+x.toFixed(1)+','+y.toFixed(1);
     areaPath+=' L'+x.toFixed(1)+','+y.toFixed(1);
     if(d.ub!=null)ubPath+=(ubPath?' L':'M')+x.toFixed(1)+','+yS(d.ub).toFixed(1);
-    if(d.lb!=null)lbPath+=(lbPath?' L':'M')+x.toFixed(1)+','+yS(d.lb).toFixed(1);
+    if(d.lb!=null)lbPath=(lbPath?' L':'M')+x.toFixed(1)+','+yS(d.lb).toFixed(1);
   });
   areaPath+=' L'+(xS(data.length-1)).toFixed(1)+','+(P.t+cH)+' Z';
-  // BB fill
+
+  // BB fill path
   const ubPts=data.filter(d=>d.ub!=null).map((d,i)=>[xS(i),yS(d.ub)]);
   const lbPts=[...data.filter(d=>d.lb!=null).map((d,i)=>[xS(i),yS(d.lb)])].reverse();
   let bbFill='';
@@ -942,29 +899,59 @@ function drawWTI(){
     bbFill+=' L'+lbPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L');
     bbFill+=' Z';
   }
-  // Grid
+
+  // Grid lines
   let grid='',gridN=6;
   for(let i=0;i<=gridN;i++){
     const v=yMin+(yRange/gridN)*i,y=yS(v);
-    grid+='<line x1="'+P.l+'" y1="'+y.toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+y.toFixed(1)+'" stroke="rgba(30,45,58,0.6)" stroke-width="0.5" stroke-dasharray="3,4"/>';
+    grid+='<line x1="'+P.l+'" y1="'+y.toFixed(1)+'" x2="'+(SVG_W-P.r)+'" y2="'+y.toFixed(1)+'" stroke="rgba(30,45,58,0.6)" stroke-width="0.5" stroke-dasharray="3,4"/>';
     grid+='<text x="'+(P.l-4)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">$'+Math.round(v)+'</text>';
   }
+
   // X labels (quarterly)
   let xL='',lastM='';
   data.forEach((d,i)=>{
     const m=d.d.substring(0,7);
     if(m!==lastM&&(i===0||m.substring(0,4)!==data[i-1].d.substring(0,4)||parseInt(m.substring(5,7))%3===1)){
       lastM=m;
-      xL+='<text x="'+(xS(i)).toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">'+d.d.substring(2,4)+'/'+d.d.substring(5,7)+'</text>';
+      xL+='<text x="'+(xS(i)).toFixed(1)+'" y="'+(SVG_H-10)+'" text-anchor="middle" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">'+d.d.substring(2,4)+'/'+d.d.substring(5,7)+'</text>';
     }
   });
+
   // Iran marker
-  const iranX=xS(0); // first data point is 2024-04-15
+  const iranX=xS(0);
   // Current price dot
   const last=data[data.length-1],lastX=xS(data.length-1),lastY=yS(last.p);
   const prevD=data[data.length-2],prevY=yS(prevD.p),curUp=last.p>prevD.p;
-  // Meta
-  const s=WTI_SUM;
+  // Price hover dots (invisible, for hit testing)
+  let priceDots='';
+  data.forEach((d,i)=>{
+    const x=xS(i),y=yS(d.p);
+    priceDots+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="6" fill="transparent" data-idx="'+i+'" class="wti-dot" cursor="crosshair"/>';
+  });
+
+  // Y-axis label
+  const yAxisLabel='<text transform="rotate(-90)" x="'+-((P.t+cH/2)).toFixed(1)+'" y="12" text-anchor="middle" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">美元/桶 ($/bbl)</text>';
+  // Last price label
+  const lastLabelX=Math.max(lastX-80,8);
+  const lastLabel='<text x="'+(lastLabelX).toFixed(1)+'" y="'+(lastY-10).toFixed(1)+'" text-anchor="start" fill="'+(curUp?'#ff3b5c':'#00e5a0')+'" font-size="10" font-family="Space Mono,monospace" font-weight="700">$'+s.cur.toFixed(2)+'</text>';
+
+  // old: svg.innerHTML='<defs><linearGradient id="og" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5a623" stop-opacity="0.12"/><stop offset="100%" stop-color="#f5a623" stop-opacity="0.01"/></linearGradient><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff3b5c" stop-opacity="0.08"/><stop offset="50%" stop-color="#ff3b5c" stop-opacity="0.03"/><stop offset="100%" stop-color="#ff3b5c" stop-opacity="0.08"/></linearGradient><filter id="gl"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'+
+    grid+xL+
+    '<path d="'+bbFill+'" fill="url(#bg)"/>'+
+    '<path d="'+ubPath+'" fill="none" stroke="rgba(255,59,92,0.5)" stroke-width="1.2" stroke-dasharray="5,3"/>'+
+    '<path d="'+lbPath+'" fill="none" stroke="rgba(255,59,92,0.5)" stroke-width="1.2" stroke-dasharray="5,3"/>'+
+    '<path d="'+areaPath+'" fill="url(#og)"/>'+
+    '<path d="'+pricePath+'" fill="none" stroke="#f5a623" stroke-width="1.8" stroke-linejoin="round" filter="url(#gl)"/>'+
+    '<line x1="'+iranX.toFixed(1)+'" y1="'+P.t+'" x2="'+iranX.toFixed(1)+'" y2="'+(P.t+cH)+'" stroke="rgba(255,59,92,0.6)" stroke-width="1" stroke-dasharray="3,3"/>'+
+    '<rect x="'+(iranX-2).toFixed(1)+'" y="'+P.t+'" width="4" height="4" fill="#ff3b5c"/>'+
+    '<text x="'+(iranX+4).toFixed(1)+'" y="'+(P.t+12)+'" fill="#ff3b5c" font-size="8" font-family="Space Mono,monospace">伊朗开战</text>'+
+    '<text x="'+(iranX+4).toFixed(1)+'" y="'+(P.t+22)+'" fill="#ff3b5c" font-size="8" font-family="Space Mono,monospace">2024-04-15</text>'+
+    priceDots+
+    '<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="4" fill="'+(curUp?'#ff3b5c':'#00e5a0')+'" stroke="#080c0f" stroke-width="1"/><circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="7" fill="none" stroke="'+(curUp?'#ff3b5c':'#00e5a0')+'" stroke-width="0.8" opacity="0.4"/>'+
+    yAxisLabel+lastLabel;
+
+  // Update meta display
   const bw=(s.upper-s.lower).toFixed(2);
   const dev=((s.cur-s.ma20)/s.ma20*100).toFixed(2);
   const devN=parseFloat(dev);
@@ -984,9 +971,120 @@ function drawWTI(){
   document.getElementById('wti-range').textContent=s.start+' ~ '+s.end;
   document.getElementById('wti-note').textContent='最后更新: '+s.end+' · EIA官方数据';
 
-  svg.innerHTML='<defs><linearGradient id="og" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5a623" stop-opacity="0.1"/><stop offset="100%" stop-color="#f5a623" stop-opacity="0.01"/></linearGradient><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff3b5c" stop-opacity="0.08"/><stop offset="50%" stop-color="#ff3b5c" stop-opacity="0.03"/><stop offset="100%" stop-color="#ff3b5c" stop-opacity="0.08"/></linearGradient><filter id="gl"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'+grid+xL+'<path d="'+bbFill+'" fill="url(#bg)"/><path d="'+ubPath+'" fill="none" stroke="rgba(255,59,92,0.5)" stroke-width="1.2" stroke-dasharray="5,3"/><path d="'+lbPath+'" fill="none" stroke="rgba(255,59,92,0.5)" stroke-width="1.2" stroke-dasharray="5,3"/><path d="'+areaPath+'" fill="url(#og)"/><path d="'+pricePath+'" fill="none" stroke="#f5a623" stroke-width="1.8" stroke-linejoin="round" filter="url(#gl)"/><line x1="'+iranX.toFixed(1)+'" y1="'+P.t+'" x2="'+iranX.toFixed(1)+'" y2="'+(P.t+cH)+'" stroke="rgba(255,59,92,0.6)" stroke-width="1" stroke-dasharray="3,3"/><rect x="'+(iranX-2).toFixed(1)+'" y="'+P.t+'" width="4" height="4" fill="#ff3b5c"/><text x="'+(iranX+4).toFixed(1)+'" y="'+(P.t+12)+'" fill="#ff3b5c" font-size="8" font-family="Space Mono,monospace">伊朗开战</text><text x="'+(iranX+4).toFixed(1)+'" y="'+(P.t+22)+'" fill="#ff3b5c" font-size="8" font-family="Space Mono,monospace">2024-04-15</text><circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="4" fill="'+(curUp?'#ff3b5c':'#00e5a0')+'" stroke="#080c0f" stroke-width="1"/><circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="7" fill="none" stroke="'+(curUp?'#ff3b5c':'#00e5a0')+'" stroke-width="0.8" opacity="0.4"/><text transform="rotate(-90)" x="'+-((P.t+cH/2)).toFixed(1)+'" y="12" text-anchor="middle" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">美元/桶 ($/bbl)</text><text x="'+(lastX-6).toFixed(1)+'" y="'+(lastY-10).toFixed(1)+'" text-anchor="end" fill="'+(curUp?'#ff3b5c':'#00e5a0')+'" font-size="10" font-family="Space Mono,monospace" font-weight="700">$'+s.cur.toFixed(2)+'</text>';
+  // ══ SCROLL + DRAG LOGIC ══
+  const svgW=SVG_W;
+  const viewW=container.offsetWidth||600;
+  const ratio=Math.min(1,viewW/svgW);
+  const thumbW=Math.max(60,Math.round(ratio*viewW));
+  const maxScroll=svgW-thumbW;
+  let scrollX=0;
+  let isDragging=false,dragStartX=0,dragStartScroll=0;
+  let isThumbDrag=false,thumbStartX=0,thumbStartScroll=0;
+
+  function updateView(sx){
+    scrollX=Math.max(0,Math.min(maxScroll,sx));
+    const pct=scrollX/maxScroll;
+    svg.style.transform='translateX('+(-scrollX).toFixed(1)+'px)';
+    svg.style.transition='none';
+    thumb.style.left=scrollX.toFixed(1)+'px';
+  }
+  function updateViewSmooth(sx){
+    scrollX=Math.max(0,Math.min(maxScroll,sx));
+    const pct=scrollX/maxScroll;
+    svg.style.transform='translateX('+(-scrollX).toFixed(1)+'px)';
+    thumb.style.left=scrollX.toFixed(1)+'px';
+  }
+
+  // Init thumb width
+  thumb.style.width=thumbW+'px';
+  thumb.style.maxWidth=(svgW/4)+'px';
+  updateView(maxScroll); // Start showing latest data
+
+  // Thumb drag
+  thumb.addEventListener('mousedown',(e)=>{e.preventDefault();isThumbDrag=true;thumbStartX=e.clientX;thumbStartScroll=scrollX;document.body.style.cursor='grabbing'});
+  // Track click to jump
+  track.addEventListener('click',(e)=>{if(e.target===thumb)return;const rect=track.getBoundingClientRect();const clickX=e.clientX-rect.left;const newScroll=(clickX/thumbW)*maxScroll;updateViewSmooth(newScroll)});
+  // Mouse drag on chart
+  container.addEventListener('mousedown',(e)=>{if(e.target.classList.contains('wti-dot')||e.target===svg){isDragging=true;dragStartX=e.clientX;dragStartScroll=scrollX;container.style.cursor='grabbing'}});
+
+  document.addEventListener('mousemove',(e)=>{
+    if(isThumbDrag){
+      const dx=e.clientX-thumbStartX;
+      updateView(thumbStartScroll+dx*(svgW/rect.width));
+    }else if(isDragging){
+      const dx=e.clientX-dragStartX;
+      updateView(dragStartScroll-dx*(svgW/viewW));
+    }
+  });
+  document.addEventListener('mouseup',()=>{isDragging=false;isThumbDrag=false;document.body.style.cursor='';container.style.cursor='crosshair'});
+
+  // Mouse wheel scroll
+  container.addEventListener('wheel',(e)=>{e.preventDefault();const step=30;updateView(scrollX+(e.deltaX||e.deltaY)*step)},{passive:false});
+
+  // ══ HOVER PRICE TOOLTIP ══
+  let hoverIdx=-1;
+  const svgEl=document.getElementById('wti-svg');
+
+  function getDataIdxFromEvent(e){
+    const rect=container.getBoundingClientRect();
+    const relX=e.clientX-rect.left;
+    // Adjust for scroll position
+    const chartX=relX+scrollX;
+    const ratio2=chartX/(svgW);
+    const idx=Math.round(ratio2*(data.length-1));
+    return Math.max(0,Math.min(data.length-1,idx));
+  }
+
+  function showTooltip(idx,e){
+    const d=data[idx];
+    if(!d)return;
+    const rect=container.getBoundingClientRect();
+    const relX=e.clientX-rect.left;
+    const absX=relX+scrollX;
+    const svgRatio=absX/svgW;
+    // Position tooltip
+    const tooltipX=Math.min(relX,viewW-140);
+    const tooltipY=5;
+    tooltip.style.left=Math.max(5,tooltipX)+'px';
+    tooltip.style.top=tooltipY+'px';
+    tooltip.style.display='block';
+    // Position crosshair
+    crosshair.style.display='block';
+    crosshair.style.left=(relX)+'px';
+    // Update values
+    document.getElementById('wti-tt-date').textContent=d.d;
+    document.getElementById('wti-tt-price').textContent='$'+d.p.toFixed(2);
+    document.getElementById('wti-tt-ma').textContent=d.ma20!=null?'$'+d.ma20.toFixed(2):'--';
+    document.getElementById('wti-tt-ub').textContent=d.ub!=null?'$'+d.ub.toFixed(2):'--';
+    document.getElementById('wti-tt-lb').textContent=d.lb!=null?'$'+d.lb.toFixed(2):'--';
+    // Position label
+    const pct=((d.p-yMin)/yRange*100).toFixed(1);
+    document.getElementById('wti-tt-pos').textContent='均线偏离: '+((d.p-(d.ma20||0))/(d.ma20||1)*100).toFixed(1)+'%';
+    const priceEl=document.getElementById('wti-tt-price');
+    priceEl.style.color=d.p>s.upper?'var(--r)':d.p<s.lower?'var(--g)':'var(--a)';
+    hoverIdx=idx;
+  }
+
+  function hideTooltip(){
+    tooltip.style.display='none';
+    crosshair.style.display='none';
+    hoverIdx=-1;
+  }
+
+  container.addEventListener('mousemove',(e)=>{
+    const idx=getDataIdxFromEvent(e);
+    if(idx!==hoverIdx)showTooltip(idx,e);
+  });
+  container.addEventListener('mouseleave',hideTooltip);
+  // Also show on thumb/dot hover
+  svg.querySelectorAll('.wti-dot').forEach(dot=>{
+    dot.addEventListener('mouseenter',(e)=>{
+      const idx=parseInt(dot.getAttribute('data-idx'));
+      showTooltip(idx,e);
+    });
+  });
 }
-drawWTI();
+
 </script>
 </body>
 </html>
