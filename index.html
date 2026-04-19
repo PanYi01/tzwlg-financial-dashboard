@@ -170,36 +170,57 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 @media(max-width:700px){.main{grid-template-columns:1fr;padding:12px}.sg{grid-template-columns:1fr}.ag{grid-template-columns:1fr}.hdr-t{font-size:14px}}
 
 /* Stock recommendation cards */
-.stk-card{padding:0;overflow:hidden}
+.stk-card{padding:0;overflow:hidden;grid-column:1 !important}
 .stk-card .chdr{padding:14px 16px 10px;margin-bottom:0}
-.stk-header-row{display:grid;grid-template-columns:32px 1fr 100px 160px 1fr;gap:8px;padding:8px 16px;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--bd);font-size:9px;color:var(--td);letter-spacing:0.1em;text-transform:uppercase}
-.stk-col-rank{text-align:center}
-.stk-col-signal{text-align:center}
-.stk-col-price{text-align:right}
-.stk-row{display:grid;grid-template-columns:32px 1fr 100px 160px 1fr;gap:8px;padding:10px 16px;border-bottom:1px solid rgba(30,45,58,0.5);transition:background 0.2s;cursor:default;align-items:center}
-.stk-row:last-of-type{border-bottom:none}
-.stk-row:hover{background:rgba(0,229,160,0.04);margin:0 -16px;padding:10px 16px}
-.stk-rank{font-family:var(--sf);font-size:20px;font-weight:900;line-height:1;text-align:center;color:var(--td)}
-.stk-row[data-score="9"] .stk-rank{color:var(--g);text-shadow:0 0 12px rgba(0,229,160,0.3)}
+/* Stock list - each row */
+.stk-list{display:flex;flex-direction:column;gap:0}
+.stk-row{display:grid;grid-template-columns:32px 1.5fr 1fr 0;padding:0;overflow:hidden;height:52px;cursor:pointer;border-bottom:1px solid rgba(30,45,58,0.5);transition:height 0.3s ease,background 0.2s,padding 0.3s;align-items:center}
+.stk-row:last-child{border-bottom:none}
+.stk-row:hover{background:rgba(0,229,160,0.04);height:110px;padding:0}
+/* Default visible: rank + name+symbol + price */
+.stk-rank{font-family:var(--sf);font-size:22px;font-weight:900;line-height:1;text-align:center;color:var(--td);padding:0 8px;width:48px;flex-shrink:0;transition:font-size 0.3s}
+.stk-row[data-score="9"] .stk-rank{color:var(--g);text-shadow:0 0 10px rgba(0,229,160,0.25)}
 .stk-row[data-score="8"] .stk-rank{color:var(--a)}
 .stk-row[data-score="7"] .stk-rank{color:#a0b8c8}
-.stk-name{font-size:13px;font-weight:700;color:var(--tb);line-height:1.2}
-.stk-symbol{font-size:9px;color:var(--td);margin-top:2px;letter-spacing:0.05em}
-.stk-price{text-align:right}
-.stk-pval{font-size:15px;font-weight:700;color:var(--tb);line-height:1}
-.stk-sdate{font-size:9px;color:var(--td);margin-top:2px}
-.stk-signal{text-align:center}
-.stk-level{font-size:10px;font-weight:700;color:var(--a);margin-bottom:3px}
-.stk-sig{font-size:9px;color:var(--g);margin-bottom:3px;letter-spacing:0.03em}
-.stk-tags{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.stk-info{flex:1;min-width:0;padding:0 8px}
+.stk-name{font-size:14px;font-weight:700;color:var(--tb);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:font-size 0.3s}
+.stk-row:hover .stk-name{font-size:16px}
+.stk-symbol{font-size:10px;color:var(--td);margin-top:2px;letter-spacing:0.05em;transition:font-size 0.3s}
+.stk-row:hover .stk-symbol{font-size:11px}
+.stk-price{padding:0 12px;text-align:right;width:100px;flex-shrink:0;transition:width 0.3s}
+.stk-pval{font-size:15px;font-weight:700;color:var(--tb);line-height:1;text-align:right}
+.stk-sdate{font-size:9px;color:var(--td);margin-top:3px;text-align:right}
+/* Hover tooltip panel - hidden by default */
+.stk-detail{grid-column:1/-1;display:none;padding:0 8px 8px;flex-direction:column;gap:4px;overflow:hidden}
+.stk-row:hover .stk-detail{display:flex}
+/* Shift content in hover mode */
+.stk-row:hover .stk-rank{font-size:26px}
+.stk-row:hover .stk-info{width:140px}
+.stk-row:hover .stk-price{width:120px}
+.stk-row:hover .stk-pval{font-size:17px}
+/* Signal badge in tooltip */
+.stk-level{font-size:10px;font-weight:700;color:var(--a);margin-bottom:2px}
+.stk-sig{font-size:9px;color:var(--g);margin-bottom:4px;letter-spacing:0.03em}
+.stk-tags{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap}
 .as{display:inline-block;font-size:8px;padding:1px 5px;border-radius:1px;letter-spacing:0.05em;text-transform:uppercase}
 .as.ss{background:rgba(0,229,160,0.15);color:var(--g);border:1px solid rgba(0,229,160,0.3)}
 .as.sb{background:rgba(245,166,35,0.12);color:var(--a);border:1px solid rgba(245,166,35,0.25)}
 .as.sw{background:rgba(79,195,247,0.08);color:var(--bl);border:1px solid rgba(79,195,247,0.2)}
 .as.sr{background:rgba(255,59,92,0.12);color:var(--r);border:1px solid rgba(255,59,92,0.25)}
-.stk-analysis{font-size:10px;color:var(--td);line-height:1.5}
+/* Analysis in tooltip */
+.stk-analysis{font-size:10px;color:var(--td);line-height:1.5;padding-top:4px;border-top:1px solid rgba(30,45,58,0.4);margin-top:2px}
+/* Header row - always visible */
+.stk-hdr{display:none;padding:6px 8px;background:rgba(0,0,0,0.2);border-bottom:1px solid var(--bd);font-size:9px;color:var(--td);letter-spacing:0.08em;text-transform:uppercase}
+/* Tooltip: signal + analysis panel */
+.stk-tip{display:none;grid-column:1/-1;flex-direction:column;gap:4px;padding:8px 10px;background:rgba(8,12,15,0.95);border:1px solid var(--bdb);border-radius:2px;margin:4px 8px;backdrop-filter:blur(8px)}
+.stk-row:hover .stk-tip{display:flex}
+.stk-tip-row{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center}
+.stk-tip-label{font-size:9px;color:var(--td);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap}
+.stk-tip-val{font-size:10px;color:var(--tx)}
+.stk-tip-full{font-size:10px;color:var(--tx);grid-column:1/-1;line-height:1.5}
 .stk-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(0,0,0,0.2);border-top:1px solid var(--bd);font-size:9px;color:var(--td);gap:16px;flex-wrap:wrap}
 .stk-warn{color:var(--r);font-weight:700}
+
 
 </style>
 </head>
@@ -393,15 +414,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       </div>
     </div>
   </div>
-  <!-- WTI CHART -->
-  <div class="card wti-card">
-    <div class="chdr">
-      <div class="ct">🛢 WTI 原油 · 布林带套利区间（自伊朗开战次日 2024-04-15 起）</div>
-      <div class="cb bo">BBands ±2σ · N=20 · EIA 数据</div>
-    </div>
-    <div class="wti-meta">
-      <div class="wti-s"><div class="wti-sl">WTI 收盘价</div><div class="wti-sv" id="wti-cur
-  <!-- A-SHARE STOCK PICKS -->
   <div class="card stk-card">
     <div class="chdr">
       <div class="ct">🇨🇳 A股精选（卢麒元「一板斧」MACD筛选）</div>
@@ -520,127 +532,146 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <span class="stk-warn">⚠️ 仅供参考，不构成投资建议</span>
     </div>
   </div>
-  <!-- HK STOCK PICKS -->
   <div class="card stk-card">
     <div class="chdr">
-      <div class="ct">🇭🇰 港股精选（卢麒元「一板斧」MACD筛选）</div>
-      <div class="cb bw">港股核心资产 · MACD强势信号</div>
+      <div class="ct">🇨🇳 A股精选（卢麒元「一板斧」MACD筛选）</div>
+      <div class="cb bs">MACD月·周·日三周期共振</div>
     </div>
-    <div class="stk-header-row">
-      <div class="stk-col-rank">#</div>
-      <div class="stk-col-info">股票</div>
-      <div class="stk-col-price">价格</div>
-      <div class="stk-col-signal">信号评级</div>
-      <div class="stk-col-analysis">核心逻辑</div>
+    <div class="stk-list">
+<div class="stk-row" data-score="9">
+    <div class="stk-rank">1</div>
+    <div class="stk-info">
+      <div class="stk-name">宁德时代</div>
+      <div class="stk-symbol">300750.SZ</div>
     </div>
-    <div class="stk-row" data-score="8">
-  <div class="stk-rank">1</div>
-  <div class="stk-info">
-    <div class="stk-name">腾讯控股</div>
-    <div class="stk-symbol">0700.HK</div>
-  </div>
-  <div class="stk-price">
-    <div class="stk-pval">HK$510.50</div>
-    <div class="stk-sdate">04-17收盘</div>
-  </div>
-  <div class="stk-signal">
-    <div class="stk-level">⭐⭐⭐ 强势推荐</div>
-    <div class="stk-sig">月线走强 · 周线上升 · 日线突破</div>
-    <div class="stk-tags">
-      <span class="as ss">港股核心</span>
-      <span class="as sw">互联网科技</span>
+    <div class="stk-price">
+      <div class="stk-pval">¥444.20</div>
+      <div class="stk-sdate">04-17收盘</div>
+    </div>
+    <div class="stk-tip">
+      <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐⭐ 满分推荐</div></div>
+      <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线金叉 · 周线上升 · 日线左脚入</div></div>
+      <div class="stk-tip-row">
+        <div class="stk-tip-label">标签</div>
+        <div class="stk-tip-val" style="display:flex;gap:4px">
+          <span class="as ss">MACD满分</span>
+          <span class="as sw">新能源</span>
+        </div>
+      </div>
+      <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>新能源电池龙头，MACD三周期共振强势，锂价回升推动盈利预期</div>
     </div>
   </div>
-  <div class="stk-analysis">港股科技龙头，AI+微信生态驱动，游戏/金融科技估值修复</div>
-</div>
+<div class="stk-row" data-score="9">
+    <div class="stk-rank">2</div>
+    <div class="stk-info">
+      <div class="stk-name">恩捷股份</div>
+      <div class="stk-symbol">002812.SZ</div>
+    </div>
+    <div class="stk-price">
+      <div class="stk-pval">¥71.67</div>
+      <div class="stk-sdate">04-17收盘</div>
+    </div>
+    <div class="stk-tip">
+      <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐⭐ 满分推荐</div></div>
+      <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线金叉 · 周线共振 · 日线上升中</div></div>
+      <div class="stk-tip-row">
+        <div class="stk-tip-label">标签</div>
+        <div class="stk-tip-val" style="display:flex;gap:4px">
+          <span class="as ss">MACD满分</span>
+          <span class="as sw">新能源材料</span>
+        </div>
+      </div>
+      <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>锂电隔膜龙头，全球市占率第一，受益电动车渗透率持续提升</div>
+    </div>
+  </div>
+<div class="stk-row" data-score="9">
+    <div class="stk-rank">3</div>
+    <div class="stk-info">
+      <div class="stk-name">天齐锂业</div>
+      <div class="stk-symbol">002466.SZ</div>
+    </div>
+    <div class="stk-price">
+      <div class="stk-pval">¥66.65</div>
+      <div class="stk-sdate">04-17收盘</div>
+    </div>
+    <div class="stk-tip">
+      <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐⭐ 满分推荐</div></div>
+      <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线金叉 · 周线上升 · 日线上升中</div></div>
+      <div class="stk-tip-row">
+        <div class="stk-tip-label">标签</div>
+        <div class="stk-tip-val" style="display:flex;gap:4px">
+          <span class="as ss">MACD满分</span>
+          <span class="as sw">有色金属</span>
+        </div>
+      </div>
+      <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>锂矿资源龙头，全球布局，碳酸锂价格反弹直接受益标的</div>
+    </div>
+  </div>
 <div class="stk-row" data-score="8">
-  <div class="stk-rank">2</div>
-  <div class="stk-info">
-    <div class="stk-name">港交所</div>
-    <div class="stk-symbol">0388.HK</div>
-  </div>
-  <div class="stk-price">
-    <div class="stk-pval">HK$408.60</div>
-    <div class="stk-sdate">04-17收盘</div>
-  </div>
-  <div class="stk-signal">
-    <div class="stk-level">⭐⭐⭐ 强势推荐</div>
-    <div class="stk-sig">月线走强 · 周线上升 · 日线蓄势</div>
-    <div class="stk-tags">
-      <span class="as ss">港股核心</span>
-      <span class="as sw">金融服务</span>
+    <div class="stk-rank">4</div>
+    <div class="stk-info">
+      <div class="stk-name">三环集团</div>
+      <div class="stk-symbol">300408.SZ</div>
+    </div>
+    <div class="stk-price">
+      <div class="stk-pval">¥65.17</div>
+      <div class="stk-sdate">04-17收盘</div>
+    </div>
+    <div class="stk-tip">
+      <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 强势推荐</div></div>
+      <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线金叉 · 周线上升 · 日线左脚入</div></div>
+      <div class="stk-tip-row">
+        <div class="stk-tip-label">标签</div>
+        <div class="stk-tip-val" style="display:flex;gap:4px">
+          <span class="as sb">MACD强势</span>
+          <span class="as sh">电子材料</span>
+        </div>
+      </div>
+      <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>电子陶瓷材料龙头，MLCC国产替代加速，业绩稳健增长</div>
     </div>
   </div>
-  <div class="stk-analysis">A股港股互联互通深化受益，IPO回暖+成交额复苏直接受益</div>
-</div>
-<div class="stk-row" data-score="7">
-  <div class="stk-rank">3</div>
-  <div class="stk-info">
-    <div class="stk-name">小米集团</div>
-    <div class="stk-symbol">1810.HK</div>
-  </div>
-  <div class="stk-price">
-    <div class="stk-pval">HK$32.00</div>
-    <div class="stk-sdate">04-17收盘</div>
-  </div>
-  <div class="stk-signal">
-    <div class="stk-level">⭐⭐ 重点关注</div>
-    <div class="stk-sig">月线走强 · 周线修复 · 日线筑底</div>
-    <div class="stk-tags">
-      <span class="as sb">重点关注</span>
-      <span class="as sw">消费电子+汽车</span>
+<div class="stk-row" data-score="8">
+    <div class="stk-rank">5</div>
+    <div class="stk-info">
+      <div class="stk-name">建设银行</div>
+      <div class="stk-symbol">601939.SS</div>
+    </div>
+    <div class="stk-price">
+      <div class="stk-pval">¥9.41</div>
+      <div class="stk-sdate">04-17收盘</div>
+    </div>
+    <div class="stk-tip">
+      <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 强势推荐</div></div>
+      <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线上升 · 日线上升中</div></div>
+      <div class="stk-tip-row">
+        <div class="stk-tip-label">标签</div>
+        <div class="stk-tip-val" style="display:flex;gap:4px">
+          <span class="as sb">MACD强势</span>
+          <span class="as sh">银行防御</span>
+        </div>
+      </div>
+      <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>高股息国有大行，估值修复+股息率支撑，防御性配置首选</div>
     </div>
   </div>
-  <div class="stk-analysis">小米SU7交付超预期，IoT生态+汽车双轮驱动，低估值高弹性</div>
-</div>
-<div class="stk-row" data-score="7">
-  <div class="stk-rank">4</div>
-  <div class="stk-info">
-    <div class="stk-name">工商银行(H)</div>
-    <div class="stk-symbol">1398.HK</div>
-  </div>
-  <div class="stk-price">
-    <div class="stk-pval">HK$7.03</div>
-    <div class="stk-sdate">04-17收盘</div>
-  </div>
-  <div class="stk-signal">
-    <div class="stk-level">⭐⭐ 重点关注</div>
-    <div class="stk-sig">月线走强 · 周线上升 · 日线上升中</div>
-    <div class="stk-tags">
-      <span class="as sb">重点关注</span>
-      <span class="as sh">银行高股息</span>
     </div>
-  </div>
-  <div class="stk-analysis">AH溢价收窄+高股息优势，南向资金持续流入配置</div>
-</div>
-<div class="stk-row" data-score="7">
-  <div class="stk-rank">5</div>
-  <div class="stk-info">
-    <div class="stk-name">阿里巴巴</div>
-    <div class="stk-symbol">9988.HK</div>
-  </div>
-  <div class="stk-price">
-    <div class="stk-pval">HK$138.00</div>
-    <div class="stk-sdate">04-17收盘</div>
-  </div>
-  <div class="stk-signal">
-    <div class="stk-level">⭐⭐ 重点关注</div>
-    <div class="stk-sig">月线走强 · 周线修复 · 日线反弹</div>
-    <div class="stk-tags">
-      <span class="as sb">重点关注</span>
-      <span class="as sw">互联网电商</span>
-    </div>
-  </div>
-  <div class="stk-analysis">电商+AI云计算双主业，估值处于历史低位，回购力度史上最大</div>
-</div>
     <div class="stk-footer">
       <span>📊 数据截至 2026-04-17 收盘</span>
-      <span>港股筛选说明：严格三重共振仅工商银行(H)通过，补充强势信号标的供参考</span>
+      <span>筛选条件：月线MACD>0+柱递增 → 周线MACD>0+柱递增 → 日线左脚入或上升中</span>
       <span class="stk-warn">⚠️ 仅供参考，不构成投资建议</span>
     </div>
   </div>
+  
+  </div>
+  <div class="card wti-card">
+    <div class="chdr">
+      <div class="ct">🛢 WTI 原油 · 布林带套利区间（自伊朗开战次日 2024-04-15 起）</div>
+      <div class="cb bo">BBands ±2σ · N=20 · EIA 数据</div>
+    </div>
+    <div class="wti-meta">
+      <div class="wti-s"><div class="wti-sl">WTI 收盘价</div><div class="wti-sv" id="wti-cur
 
-" style="color:var(--a)">$--</div></div>
+    <div class="wti-meta">
+      <div class="wti-s"><div class="wti-sl">WTI 收盘价</div><div class="wti-sv" id="wti-cur" style="color:var(--a)">$--</div></div>
       <div class="wti-div"></div>
       <div class="wti-s"><div class="wti-sl">MA20 均线</div><div class="wti-sv" style="color:#00e5a0" id="wti-ma20">$--</div></div>
       <div class="wti-div"></div>
@@ -658,7 +689,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="wti-div"></div>
       <div class="wti-s"><div class="wti-sl">数据区间</div><div class="wti-sv" style="font-size:12px;color:var(--td)" id="wti-range">--</div></div>
     </div>
-    <div class="wti-lg">
+    <div class="wti-legend">
       <div class="li2"><div class="ll" style="background:#f5a623"></div>WTI 收盘价</div>
       <div class="li2"><div class="ll" style="background:#00e5a0"></div>MA20 均线</div>
       <div class="li2"><div class="ld2" style="border-top-color:rgba(255,107,122,0.7)"></div>布林上轨 (+2σ)</div>
@@ -673,11 +704,112 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     </div>
     <div class="wti-ft">数据来源: EIA Cushing OK WTI Spot Price FOB ($/桶) · 自伊朗袭击以色列次日(2024-04-15)起 · 布林带参数: N=20, σ=2 · <span id="wti-note">--</span></div>
   </div>
-  <!-- DISCLAIMER -->
+
+<!--  -->
+  <div class="card stk-card">
+    <div class="chdr">
+      <div class="ct">🇭🇰 港股精选（卢麒元「一板斧」MACD筛选）</div>
+      <div class="cb bw">港股核心资产 · MACD强势信号</div>
+    </div>
+    <div class="stk-list">
+      <div class="stk-row" data-score="8">
+        <div class="stk-rank">1</div>
+        <div class="stk-info">
+          <div class="stk-name">腾讯控股</div>
+          <div class="stk-symbol">0700.HK</div>
+        </div>
+        <div class="stk-price">
+          <div class="stk-pval">HK$510.50</div>
+          <div class="stk-sdate">04-17收盘</div>
+        </div>
+        <div class="stk-tip">
+          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐⭐ 强势推荐</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线上升 · 日线突破</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as ss">港股核心</span><span class="as sw">互联网科技</span></div></div>
+          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>港股科技龙头，AI+微信生态驱动，游戏/金融科技估值修复</div>
+        </div>
+      </div>
+      <div class="stk-row" data-score="8">
+        <div class="stk-rank">2</div>
+        <div class="stk-info">
+          <div class="stk-name">港交所</div>
+          <div class="stk-symbol">0388.HK</div>
+        </div>
+        <div class="stk-price">
+          <div class="stk-pval">HK$408.60</div>
+          <div class="stk-sdate">04-17收盘</div>
+        </div>
+        <div class="stk-tip">
+          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐⭐ 强势推荐</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线上升 · 日线蓄势</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as ss">港股核心</span><span class="as sw">金融服务</span></div></div>
+          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>A股港股互联互通深化受益，IPO回暖+成交额复苏直接受益</div>
+        </div>
+      </div>
+      <div class="stk-row" data-score="7">
+        <div class="stk-rank">3</div>
+        <div class="stk-info">
+          <div class="stk-name">小米集团</div>
+          <div class="stk-symbol">1810.HK</div>
+        </div>
+        <div class="stk-price">
+          <div class="stk-pval">HK$32.00</div>
+          <div class="stk-sdate">04-17收盘</div>
+        </div>
+        <div class="stk-tip">
+          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 重点关注</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线修复 · 日线筑底</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as sb">重点关注</span><span class="as sw">消费电子+汽车</span></div></div>
+          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>小米SU7交付超预期，IoT生态+汽车双轮驱动，低估值高弹性</div>
+        </div>
+      </div>
+      <div class="stk-row" data-score="7">
+        <div class="stk-rank">4</div>
+        <div class="stk-info">
+          <div class="stk-name">工商银行(H)</div>
+          <div class="stk-symbol">1398.HK</div>
+        </div>
+        <div class="stk-price">
+          <div class="stk-pval">HK$7.03</div>
+          <div class="stk-sdate">04-17收盘</div>
+        </div>
+        <div class="stk-tip">
+          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 重点关注</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线上升 · 日线上升中</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as sb">重点关注</span><span class="as sh">银行高股息</span></div></div>
+          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>AH溢价收窄+高股息优势，南向资金持续流入配置</div>
+        </div>
+      </div>
+      <div class="stk-row" data-score="7">
+        <div class="stk-rank">5</div>
+        <div class="stk-info">
+          <div class="stk-name">阿里巴巴</div>
+          <div class="stk-symbol">9988.HK</div>
+        </div>
+        <div class="stk-price">
+          <div class="stk-pval">HK$138.00</div>
+          <div class="stk-sdate">04-17收盘</div>
+        </div>
+        <div class="stk-tip">
+          <div class="stk-tip-row"><div class="stk-tip-label">评级</div><div class="stk-tip-val stk-level">⭐⭐ 重点关注</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">信号</div><div class="stk-tip-val" style="color:var(--g)">月线走强 · 周线修复 · 日线反弹</div></div>
+          <div class="stk-tip-row"><div class="stk-tip-label">标签</div><div class="stk-tip-val" style="display:flex;gap:4px"><span class="as sb">重点关注</span><span class="as sw">互联网电商</span></div></div>
+          <div class="stk-tip-full"><div class="stk-tip-label" style="margin-bottom:3px">核心逻辑</div>电商+AI云计算双主业，估值处于历史低位，回购力度史上最大</div>
+        </div>
+      </div>
+    </div>
+    <div class="stk-footer">
+      <span>📊 数据截至 2026-04-17 收盘</span>
+      <span>港股筛选说明：严格三重共振仅工商银行(H)通过，补充强势信号标的供参考</span>
+      <span class="stk-warn">⚠️ 仅供参考，不构成投资建议</span>
+    </div>
+  </div>
+
   <div class="dc">
     <strong>⚠ 重要声明：</strong>本仪表盘基于 TZWLG 视频"课补1"的分析框架构建，所有观点均为作者个人分析，<strong>不构成任何投资建议</strong>。WTI 布林带数据来源于 EIA 历史记录，仅供参考，不构成交易依据。投资有风险，入市需谨慎。
   </div>
 </main>
+
 <footer class="ft">
   <div>全球金融风险决策仪表盘 · 基于 TZWLG 课补1 框架</div>
   <div>数据: Stooq · Frankfurter.dev (ECB) · EIA</div>
