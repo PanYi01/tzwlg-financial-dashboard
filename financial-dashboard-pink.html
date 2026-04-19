@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 全球金融风险决策仪表盘 · TZWLG 框架</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>:root{
+  --bg:#fff5f8;
+  --bg2:#fff0f5;
+  --bg3:#ffe4ee;
+  --bd:#f8c8d8;
+  --bdb:#ffb3cc;
+  --pk:#ff69b4;
+  --pk2:#ff85c0;
+  --pkb:#ffb7d5;
+  --pk3:#ff4d94;
+  --lv:#a8e6cf;
+  --lv2:#7dd3b0;
+  --pu:#c9a0dc;
+  --pu2:#b388e8;
+  --or:#ffb347;
+  --rd:#ff6b8a;
+  --bl:#89cff0;
+  --go:#ffd700;
+  --tx:#6b3a5c;
+  --td:#9b6b8a;
+  --tb:#4a2040;
+  --mn:'Space Mono',monospace;
+  --sf:'M PLUS Rounded 1c','Noto Serif SC',sans-serif
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:var(--mn);font-size:13px;line-height:1.7;min-height:100vh;overflow-x:hidden}
+
+/* cute dot grid bg */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(255,105,180,0.12) 1px,transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;z-index:9999
+}
+
+/* floating sparkles */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(255,182,193,0.3) 0%,transparent 40%),
+    radial-gradient(circle at 85% 15%,rgba(255,105,180,0.2) 0%,transparent 35%),
+    radial-gradient(circle at 90% 80%,rgba(201,160,220,0.2) 0%,transparent 30%),
+    radial-gradient(circle at 5% 75%,rgba(168,230,207,0.2) 0%,transparent 30%);
+  pointer-events:none;z-index:9998;
+}
+
+/* ── HEADER ── */
+.hdr{
+  border-bottom:2px solid var(--bdb);
+  padding:12px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,rgba(255,240,245,0.97) 0%,rgba(255,230,240,0.95) 50%,rgba(255,240,248,0.9) 100%);
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(12px);
+  box-shadow:0 2px 20px rgba(255,105,180,0.15)
+}
+.hdr-l{display:flex;align-items:center;gap:14px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--pk);
+  box-shadow:0 0 14px var(--pk),0 0 6px rgba(255,105,180,0.4);
+  animation:pl 1.8s ease-in-out infinite}
+@keyframes pl{0%,100%{opacity:1;box-shadow:0 0 14px var(--pk),0 0 6px rgba(255,105,180,0.4);transform:scale(1)}50%{opacity:0.6;box-shadow:0 0 6px var(--pk);transform:scale(0.85)}}
+.hdr-t{font-family:var(--sf);font-size:19px;color:var(--tb);letter-spacing:0.01em;font-weight:700}
+.hdr-s{font-size:10px;color:var(--td);letter-spacing:0.12em;text-transform:uppercase}
+.hdr-r{display:flex;align-items:center;gap:18px}
+.lv{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--pk);letter-spacing:0.1em;text-transform:uppercase;font-weight:700}
+.ld{width:7px;height:7px;border-radius:50%;background:var(--pk);animation:pl 1s ease-in-out infinite}
+#clk{font-size:12px;color:var(--td);letter-spacing:0.05em}
+
+/* ── ALERT BAR ── */
+.ab{
+  background:linear-gradient(90deg,rgba(255,105,180,0.12),rgba(201,160,220,0.08));
+  border-bottom:2px solid rgba(255,105,180,0.2);
+  padding:8px 24px;display:flex;align-items:center;gap:12px;overflow:hidden
+}
+.al{font-size:10px;color:var(--pk3);letter-spacing:0.15em;text-transform:uppercase;white-space:nowrap;font-weight:700}
+.tw{overflow:hidden;flex:1}
+.tk{display:flex;gap:40px;animation:tk 30s linear infinite;white-space:nowrap}
+@keyframes tk{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{font-size:11px;color:var(--pu2);letter-spacing:0.04em}
+.ti span{color:var(--pk3);margin-right:4px}
+
+/* ── MAIN GRID ── */
+.main{padding:20px 24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;max-width:1600px;margin:0 auto}
+
+/* ── CARDS ── */
+.card{
+  background:var(--bg2);
+  border:1.5px solid var(--bd);
+  border-radius:16px;
+  padding:16px;
+  position:relative;overflow:hidden;
+  transition:border-color 0.3s,box-shadow 0.3s,transform 0.2s;
+  box-shadow:0 2px 12px rgba(255,105,180,0.08)
+}
+.card:hover{
+  border-color:var(--bdb);
+  box-shadow:0 6px 28px rgba(255,105,180,0.18);
+  transform:translateY(-2px)
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pk2),var(--pu),var(--lv));
+  opacity:0;transition:opacity 0.3s
+}
+.card:hover::before{opacity:1}
+
+.chdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1.5px solid rgba(248,200,216,0.5)
+}
+.ct{font-size:10px;color:var(--td);letter-spacing:0.15em;text-transform:uppercase}
+.cb{font-size:9px;padding:3px 9px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase}
+.bw{background:rgba(255,179,71,0.15);color:#e08020;border:1px solid rgba(255,179,71,0.3)}
+.bd{background:rgba(255,107,138,0.12);color:var(--pk3);border:1px solid rgba(255,107,138,0.25)}
+.bs{background:rgba(168,230,207,0.2);color:#3a9060;border:1px solid rgba(168,230,207,0.35)}
+.bi{background:rgba(201,160,220,0.15);color:#8060b0;border:1px solid rgba(201,160,220,0.3)}
+.bo{background:rgba(255,179,71,0.1);color:#e08020;border:1px solid rgba(255,179,71,0.25)}
+.cc{grid-column:1/-1;background:linear-gradient(135deg,#fff0f5 0%,#ffe4f0 50%,#fff5fa 100%);border-color:rgba(255,105,180,0.25)}
+
+/* ── COUNTDOWN ── */
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ci{text-align:center;padding:16px 8px;background:rgba(255,255,255,0.7);border:1.5px solid var(--bd);border-radius:14px;transition:box-shadow 0.2s}
+.ci:hover{box-shadow:0 4px 18px rgba(255,105,180,0.15)}
+.ci.dg{border-color:rgba(255,107,138,0.4)}
+.ci.wg{border-color:rgba(255,179,71,0.35)}
+.ci.ig{border-color:rgba(168,230,207,0.4)}
+.cl{font-size:9px;color:var(--td);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px}
+.cd{font-size:11px;color:var(--td);margin-bottom:4px}
+.cn{font-family:var(--sf);font-size:40px;font-weight:800;line-height:1;margin-bottom:3px}
+.ci.dg .cn{color:var(--pk3);text-shadow:0 0 18px rgba(255,105,180,0.25)}
+.ci.wg .cn{color:var(--or);text-shadow:0 0 16px rgba(255,179,71,0.2)}
+.ci.ig .cn{color:var(--lv2);text-shadow:0 0 16px rgba(168,230,207,0.25)}
+.cu{font-size:9px;color:var(--td);letter-spacing:0.1em}
+.cds{font-size:11px;color:var(--tx);margin-top:7px;line-height:1.5}
+
+/* ── MARKET ROWS ── */
+.mr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(248,200,216,0.5);cursor:pointer;transition:background 0.2s}
+.mr:last-child{border-bottom:none}
+.mr:hover{background:rgba(255,182,193,0.12);margin:0 -16px;padding:9px 16px;border-radius:8px}
+.mn{display:flex;align-items:center;gap:8px}
+.mi{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.mg{background:rgba(255,215,0,0.2);color:#b8860b}
+.mo{background:rgba(255,179,71,0.15);color:#e08020}
+.ms{background:rgba(180,200,220,0.2);color:#607080}
+.mc{background:rgba(255,160,122,0.2);color:#c04020}
+.mu{background:rgba(137,207,240,0.15);color:#4090c0}
+.mj{background:rgba(255,105,180,0.15);color:var(--pk3)}
+.me{background:rgba(255,179,71,0.12);color:#e08020}
+.mcn{background:rgba(255,182,193,0.2);color:var(--pk3)}
+.sy{font-size:12px;color:var(--tb);font-weight:700}
+.fl{font-size:10px;color:var(--td)}
+.mp{text-align:right}
+.pv{font-size:13px;color:var(--tb);font-weight:700}
+.pc{font-size:10px;margin-top:1px}
+.up{color:var(--lv2)}.dn{color:var(--rd)}.nt{color:var(--td)}
+
+/* ── GAUGE ── */
+.rg{display:flex;flex-direction:column;align-items:center;padding:8px 0}
+.gw{position:relative;width:160px;height:90px;margin-bottom:10px}
+.gv{position:absolute;bottom:0;left:50%;transform:translateX(-50%);text-align:center}
+.gn{font-family:var(--sf);font-size:30px;font-weight:800;color:var(--pk3);text-shadow:0 0 18px rgba(255,105,180,0.35);line-height:1}
+.gl{font-size:9px;color:var(--td);letter-spacing:0.1em;text-transform:uppercase}
+.ri{width:100%;display:flex;flex-direction:column;gap:6px}
+.rj{display:flex;align-items:center;gap:8px}
+.rn{font-size:10px;color:var(--td);width:60px;flex-shrink:0}
+.rbw{flex:1;height:5px;background:rgba(248,200,216,0.4);border-radius:3px;overflow:hidden}
+.rb{height:100%;border-radius:3px;transition:width 1s ease}
+.rp{font-size:10px;width:32px;text-align:right}
+
+/* ── ALLOCATION GRID ── */
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ai{padding:10px 12px;background:rgba(255,255,255,0.6);border:1.5px solid var(--bd);border-radius:12px;transition:border-color 0.2s,background 0.2s,box-shadow 0.2s;cursor:default}
+.ai:hover{border-color:var(--bdb);background:rgba(255,255,255,0.85);box-shadow:0 3px 14px rgba(255,105,180,0.12)}
+.ai.c1{border-left:3px solid var(--go)}
+.ai.c2{border-left:3px solid var(--pk2)}
+.ai.c3{border-left:3px solid var(--pu)}
+.ai.c4{border-left:3px solid var(--or)}
+.ai.c5{border-left:3px solid var(--lv)}
+.ai.cc{border-left:3px solid var(--bl)}
+.ai.cr{border-left:3px solid var(--rd)}
+.ak{font-size:9px;color:var(--td);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px}
+.an{font-size:13px;color:var(--tb);font-weight:700;margin-bottom:2px}
+.ad{font-size:10px;color:var(--td);line-height:1.4}
+.as{display:inline-block;font-size:9px;padding:2px 7px;border-radius:20px;margin-top:4px;letter-spacing:0.06em;text-transform:uppercase}
+.sb{background:rgba(168,230,207,0.2);color:#3a9060;border:1px solid rgba(168,230,207,0.35)}
+.sh{background:rgba(137,207,240,0.15);color:#4090c0;border:1px solid rgba(137,207,240,0.3)}
+.sr{background:rgba(255,107,138,0.12);color:var(--pk3);border:1px solid rgba(255,107,138,0.25)}
+.sw{background:rgba(255,179,71,0.12);color:#e08020;border:1px solid rgba(255,179,71,0.25)}
+
+/* ── CAPITAL FLOW ── */
+.fi{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(248,200,216,0.4)}
+.fi:last-child{border-bottom:none}
+.fn{font-size:11px;color:var(--tb);width:80px;flex-shrink:0}
+.fbw{flex:1;height:7px;background:rgba(248,200,216,0.35);border-radius:4px;overflow:hidden;position:relative}
+.fb{height:100%;border-radius:4px;position:absolute;transition:width 1.5s ease}
+.fi.in .fb{background:linear-gradient(90deg,var(--lv2),var(--lv));left:0}
+.fi.ot .fb{background:linear-gradient(90deg,var(--rd),var(--pk3));right:0}
+.fd{font-size:10px;width:50px;text-align:right;flex-shrink:0}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--pk3),var(--pu),var(--lv))}
+.ti2{position:relative;margin-bottom:14px}
+.ti2:last-child{margin-bottom:0}
+.td2{position:absolute;left:-18px;top:5px;width:9px;height:9px;border-radius:50%;border:2px solid}
+.td2.r{background:rgba(255,105,180,0.3);border-color:var(--pk3);box-shadow:0 0 8px rgba(255,105,180,0.4)}
+.td2.w{background:rgba(255,179,71,0.25);border-color:var(--or)}
+.td2.b{background:rgba(137,207,240,0.2);border-color:var(--bl)}
+.td2.g{background:rgba(168,230,207,0.25);border-color:var(--lv)}
+.tde{font-size:10px;color:var(--td);letter-spacing:0.05em;margin-bottom:2px}
+.ttl{font-size:12px;color:var(--tb);font-weight:700;margin-bottom:2px}
+.tdc{font-size:10px;color:var(--td);line-height:1.5}
+
+/* ── US DEBT ── */
+#us-debt{font-family:var(--sf);font-size:36px;font-weight:800;color:var(--or);text-shadow:0 0 20px rgba(255,179,71,0.25)}
+
+/* ── STRATEGY ── */
+.sc{grid-column:1/-1}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.si{padding:14px;background:rgba(255,255,255,0.65);border:1.5px solid var(--bd);border-radius:14px;position:relative;overflow:hidden;transition:box-shadow 0.2s,transform 0.2s}
+.si:hover{box-shadow:0 4px 18px rgba(255,105,180,0.15);transform:translateY(-2px)}
+.si::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.si.rd::after{background:linear-gradient(90deg,var(--pk3),var(--pk2))}
+.si.hd::after{background:linear-gradient(90deg,var(--bl),#a8d8ff)}
+.si.by::after{background:linear-gradient(90deg,var(--lv2),var(--lv))}
+.si.wt::after{background:linear-gradient(90deg,var(--pu2),var(--pu))}
+.sic{font-size:22px;margin-bottom:6px}
+.sac{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px}
+.si.rd .sac{color:var(--pk3)}
+.si.hd .sac{color:#4090c0}
+.si.by .sac{color:#3a9060}
+.si.wt .sac{color:#8060b0}
+.st{font-size:13px;color:var(--tb);font-weight:700;margin-bottom:5px}
+.sp{list-style:none;display:flex;flex-direction:column;gap:3px}
+.sp li{font-size:10px;color:var(--td);padding-left:10px;position:relative;line-height:1.5}
+.sp li::before{content:'♡';position:absolute;left:0;color:var(--pk2);font-size:8px;top:1px}
+
+/* ── WTI CARD ── */
+.wti-card{grid-column:1/-1;padding:0;overflow:hidden;border-radius:16px;border:1.5px solid var(--bd)}
+.wti-card .chdr{padding:14px 16px 10px;margin-bottom:0;border-radius:16px 16px 0 0}
+.wti-meta{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 16px;
+  background:rgba(255,240,245,0.8);
+  border-top:1.5px solid var(--bd);border-bottom:1.5px solid var(--bd);
+  flex-wrap:wrap
+}
+.wti-s{text-align:center;padding:0 10px}
+.wti-sl{font-size:8px;color:var(--td);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px}
+.wti-sv{font-size:17px;font-weight:700;line-height:1}
+.wti-div{width:1px;height:28px;background:var(--bd);flex-shrink:0}
+.wti-lg{display:flex;align-items:center;gap:14px;padding:8px 16px;flex-wrap:wrap;font-size:10px;color:var(--td)}
+.li2{display:flex;align-items:center;gap:5px}
+.ll{width:20px;height:3px;border-radius:2px;flex-shrink:0}
+.ld2{width:20px;height:3px;background:none!important;border-top:3px dashed!important}
+.la2{width:16px;height:10px;border-radius:3px;flex-shrink:0}
+.wti-ft{padding:6px 16px;font-size:9px;color:var(--td);background:rgba(255,240,245,0.6)}
+.dc{grid-column:1/-1;padding:12px 16px;background:rgba(255,240,248,0.8);border:1.5px solid rgba(255,105,180,0.2);border-radius:14px;font-size:10px;color:var(--td);line-height:1.6}
+.dc strong{color:var(--pk3)}
+.ft{border-top:2px solid var(--bd);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--td);letter-spacing:0.05em}
+
+/* ── ENTRANCE ANIMATION ── */
+@keyframes fa{from{opacity:0;transform:translateY(14px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card{animation:fa 0.5s cubic-bezier(0.34,1.2,0.64,1) both}
+.card:nth-child(1){animation-delay:0.05s}.card:nth-child(2){animation-delay:0.1s}.card:nth-child(3){animation-delay:0.15s}.card:nth-child(4){animation-delay:0.2s}.card:nth-child(5){animation-delay:0.25s}.card:nth-child(6){animation-delay:0.3s}.card:nth-child(7){animation-delay:0.35s}.card:nth-child(8){animation-delay:0.4s}.card:nth-child(9){animation-delay:0.45s}.card:nth-child(10){animation-delay:0.5s}
+
+/* pulse for price */
+@keyframes flk{0%,100%{opacity:1}92%{opacity:1}93%{opacity:0.75}94%{opacity:1}}
+.pv{animation:flk 6s ease-in-out infinite}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){.main{grid-template-columns:1fr 1fr}.cg{grid-template-columns:1fr}.sg{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.main{grid-template-columns:1fr;padding:12px}.sg{grid-template-columns:1fr}.ag{grid-template-columns:1fr}.hdr-t{font-size:15px}}
+
+/* ── WTI SCROLLABLE CHART ── */
+.wti-chart-wrap{position:relative;overflow:hidden;cursor:crosshair;touch-action:none;background:rgba(255,240,245,0.4);border-radius:0 0 16px 16px}
+.wti-scroll-container{overflow:hidden;width:100%;line-height:0}
+.wti-scroll-container svg{width:1200px;height:300px;display:block}
+.wti-tooltip{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:rgba(255,248,252,0.96);border:1.5px solid var(--bdb);
+  border-radius:12px;padding:10px 14px;pointer-events:none;z-index:20;
+  min-width:130px;text-align:center;
+  backdrop-filter:blur(12px);
+  box-shadow:0 6px 24px rgba(255,105,180,0.2)
+}
+.wti-tt-date{font-size:10px;color:var(--td);font-family:var(--sf);margin-bottom:4px;letter-spacing:0.05em}
+.wti-tt-price{font-size:22px;font-weight:800;color:var(--pk3);font-family:var(--sf);line-height:1;margin-bottom:4px;text-shadow:0 0 12px rgba(255,105,180,0.2)}
+.wti-tt-ma{font-size:9px;color:var(--lv2);margin-bottom:2px}
+.wti-tt-band{font-size:9px;color:var(--td);margin-bottom:2px}
+.wti-tt-pos{font-size:9px;color:var(--pu2);margin-top:3px;font-weight:700;letter-spacing:0.05em}
+.wti-crosshair{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,105,180,0.2);pointer-events:none;z-index:10;transition:left 0.05s linear}
+.wti-scrollbar-wrap{padding:6px 0 2px;position:relative}
+.wti-scrollbar{display:flex;align-items:center;gap:12px}
+.wti-scrollbar-track{flex:1;height:5px;background:rgba(248,200,216,0.5);border-radius:3px;position:relative;cursor:grab;overflow:visible}
+.wti-scrollbar-track:active{cursor:grabbing}
+.wti-scrollbar-thumb{
+  position:absolute;top:50%;transform:translateY(-50%);left:0;
+  height:14px;min-width:60px;max-width:400px;
+  background:linear-gradient(90deg,var(--pk2),var(--pu));
+  border-radius:7px;cursor:grab;transition:background 0.2s;
+  box-shadow:0 0 10px rgba(255,133,192,0.4)
+}
+.wti-scrollbar-thumb:hover{background:linear-gradient(90deg,var(--pk3),var(--pk2));box-shadow:0 0 14px rgba(255,105,180,0.5)}
+.wti-scrollbar-thumb:active{cursor:grabbing;background:linear-gradient(90deg,var(--pk3),var(--pk2))}
+.wti-scrollbar-hint{font-size:9px;color:var(--td);white-space:nowrap;letter-spacing:0.05em;padding:0 4px}
+
+/* ── STOCK CARDS ── */
+.stk-card{padding:0;overflow:hidden;grid-column:1 !important;border-radius:16px}
+.stk-card .chdr{padding:14px 16px 10px;margin-bottom:0;border-radius:16px 16px 0 0}
+.stk-list{display:flex;flex-direction:column}
+.stk-row{
+  display:grid;grid-template-columns:44px 1.5fr 100px 0;
+  overflow:hidden;height:54px;cursor:pointer;
+  border-bottom:1px solid rgba(248,200,216,0.4);
+  transition:height 0.3s ease,background 0.2s,box-shadow 0.2s;
+  align-items:center
+}
+.stk-row:last-child{border-bottom:none}
+.stk-row:hover{
+  background:rgba(255,240,248,0.9);
+  height:120px;
+  box-shadow:0 3px 14px rgba(255,105,180,0.1)
+}
+.stk-rank{
+  font-family:var(--sf);font-size:22px;font-weight:800;line-height:1;
+  text-align:center;color:var(--td);padding:0 8px;transition:font-size 0.3s
+}
+.stk-row[data-score="9"] .stk-rank{color:var(--pk3);text-shadow:0 0 10px rgba(255,105,180,0.2)}
+.stk-row[data-score="8"] .stk-rank{color:var(--pu2)}
+.stk-row[data-score="7"] .stk-rank{color:var(--or)}
+.stk-info{flex:1;min-width:0;padding:0 8px}
+.stk-name{font-size:14px;font-weight:700;color:var(--tb);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:font-size 0.3s}
+.stk-row:hover .stk-name{font-size:15px}
+.stk-symbol{font-size:10px;color:var(--td);margin-top:2px;letter-spacing:0.05em;transition:font-size 0.3s}
+.stk-row:hover .stk-symbol{font-size:11px}
+.stk-price{padding:0 12px;text-align:right;width:100px;flex-shrink:0;transition:width 0.3s}
+.stk-pval{font-size:15px;font-weight:700;color:var(--tb);line-height:1;text-align:right}
+.stk-sdate{font-size:9px;color:var(--td);margin-top:3px;text-align:right}
+.stk-tip{
+  display:none;grid-column:1/-1;flex-direction:column;gap:5px;
+  padding:8px 12px;
+  background:rgba(255,248,252,0.97);
+  border:1.5px solid var(--bdb);border-radius:12px;
+  margin:4px 8px;backdrop-filter:blur(10px);
+  box-shadow:0 4px 16px rgba(255,105,180,0.12)
+}
+.stk-row:hover .stk-tip{display:flex}
+.stk-tip-row{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center}
+.stk-tip-label{font-size:9px;color:var(--td);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap}
+.stk-tip-val{font-size:10px;color:var(--tx)}
+.stk-tip-full{font-size:10px;color:var(--tx);grid-column:1/-1;line-height:1.5}
+.stk-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 16px;
+  background:rgba(255,240,245,0.7);
+  border-top:1.5px solid var(--bd);
+  font-size:9px;color:var(--td);gap:16px;flex-wrap:wrap;border-radius:0 0 16px 16px
+}
+.stk-warn{color:var(--pk3);font-weight:700}
+.stk-level{font-size:10px;font-weight:700;color:var(--pk3);margin-bottom:2px}
+.stk-sig{font-size:9px;color:var(--lv2);margin-bottom:4px;letter-spacing:0.03em}
+.stk-tags{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="dot"></div>
+    <div>
+      <div class="hdr-t">全球金融风险决策仪表盘</div>
+      <div class="hdr-s">TZWLG 经济周期框架 · 课补1 · 实时数据监控</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="lv"><div class="ld"></div>LIVE DATA</div>
+    <div id="clk">--:--:--</div>
+  </div>
+</header>
+<div class="ab">
+  <div class="al">⚠ 风险预警</div>
+  <div class="tw">
+    <div class="tk">
+      <span class="ti"><span>▲</span>日元金融风险窗口临近 · 关注日本央行加息动向</span>
+      <span class="ti"><span>▲</span>美国国债规模持续扩张 · 9月30日财政年度截止日为关键观察节点</span>
+      <span class="ti"><span>▲</span>金转油周期启动 · 18个月基准周期内重大变局预期</span>
+      <span class="ti"><span>▲</span>全球资本回流美国趋势加速 · 非美资产流动性收缩</span>
+      <span class="ti"><span>▲</span>向心通缩大概率2027年爆发 · 现金储备为核心防御策略</span>
+      <span class="ti"><span>▲</span>WTI 原油价格：当前$100.72，距布林带上轨$113.86有13%空间</span>
+      <span class="ti"><span>▲</span>日元金融风险窗口临近 · 关注日本央行加息动向</span>
+      <span class="ti"><span>▲</span>美国国债规模持续扩张 · 9月30日财政年度截止日为关键观察节点</span>
+      <span class="ti"><span>▲</span>金转油周期启动 · 18个月基准周期内重大变局预期</span>
+      <span class="ti"><span>▲</span>全球资本回流美国趋势加速 · 非美资产流动性收缩</span>
+      <span class="ti"><span>▲</span>向心通缩大概率2027年爆发 · 现金储备为核心防御策略</span>
+      <span class="ti"><span>▲</span>WTI 原油价格：当前$100.72，距布林带上轨$113.86有13%空间</span>
+    </div>
+  </div>
+</div>
+<main class="main">
+  <!-- COUNTDOWN -->
+  <div class="card cc">
+    <div class="chdr"><div class="ct">⏱ 关键时间窗口倒计时</div><div class="cb bd">HIGH ALERT</div></div>
+    <div class="cg">
+      <div class="ci dg">
+        <div class="cl">日元风险窗口</div>
+        <div class="cd">2025年4月28日</div>
+        <div class="cn" id="cd-jpy">--</div>
+        <div class="cu">DAYS REMAINING</div>
+        <div class="cds">日本央行加息决策窗口<br>全球资本流向关键节点</div>
+      </div>
+      <div class="ci wg">
+        <div class="cl">美国财政年度截止</div>
+        <div class="cd">2025年9月30日</div>
+        <div class="cn" id="cd-us">--</div>
+        <div class="cu">DAYS REMAINING</div>
+        <div class="cds">美国国债42万亿美元警戒线<br>美元信用危机观察窗口</div>
+      </div>
+      <div class="ci ig">
+        <div class="cl">向心通缩预期爆发</div>
+        <div class="cd">2027年（预期）</div>
+        <div class="cn" id="cd-deflation">--</div>
+        <div class="cu">DAYS ESTIMATED</div>
+        <div class="cds">优质低价资产布局窗口<br>人民币国际化进程加速或提前</div>
+      </div>
+    </div>
+  </div>
+  <!-- COMMODITIES -->
+  <div class="card">
+    <div class="chdr"><div class="ct">📊 大宗商品行情</div><div class="cb bs">CORE ASSETS</div></div>
+    <div>
+      <div class="mr"><div class="mn"><div class="mi mg">Au</div><div><div class="sy">GOLD</div><div class="fl">黄金 · 优先级 #1</div></div></div><div class="mp"><div class="pv" id="gold-price">加载中...</div><div class="pc" id="gold-chg">--</div></div></div>
+      <div class="mr"><div class="mn"><div class="mi ms">Ag</div><div><div class="sy">SILVER</div><div class="fl">白银 · 优先级 #2</div></div></div><div class="mp"><div class="pv" id="silver-price">加载中...</div><div class="pc" id="silver-chg">--</div></div></div>
+      <div class="mr"><div class="mn"><div class="mi mc">Cu</div><div><div class="sy">COPPER</div><div class="fl">铜 · 优先级 #3</div></div></div><div class="mp"><div class="pv" id="copper-price">加载中...</div><div class="pc" id="copper-chg">--</div></div></div>
+      <div class="mr"><div class="mn"><div class="mi mo">🛢</div><div><div class="sy">WTI OIL</div><div class="fl">原油 · 金转油核心标的</div></div></div><div class="mp"><div class="pv" id="oil-price">加载中...</div><div class="pc" id="oil-chg">--</div></div></div>
+    </div>
+    <div style="margin-top:10px;font-size:9px;color:var(--td);text-align:right;">数据源: Stooq · <span id="commodity-update">--</span></div>
+  </div>
+  <!-- CURRENCIES -->
+  <div class="card">
+    <div class="chdr"><div class="ct">💱 货币风险监控</div><div class="cb bd">HIGH RISK</div></div>
+    <div>
+      <div class="mr"><div class="mn"><div class="mi mcn">¥</div><div><div class="sy">CNY/USD</div><div class="fl">人民币 · 核心持仓货币</div></div></div><div class="mp"><div class="pv" id="cny-price">加载中...</div><div class="pc" id="cny-chg">--</div></div></div>
+      <div class="mr"><div class="mn"><div class="mi mj">¥</div><div><div class="sy">USD/JPY</div><div class="fl">日元 · ⚠ 高风险预警</div></div></div><div class="mp"><div class="pv" id="jpy-price">加载中...</div><div class="pc" id="jpy-chg">--</div></div></div>
+      <div class="mr"><div class="mn"><div class="mi me">€</div><div><div class="sy">EUR/USD</div><div class="fl">欧元 · 潜在风险</div></div></div><div class="mp"><div class="pv" id="eur-price">加载中...</div><div class="pc" id="eur-chg">--</div></div></div>
+      <div class="mr"><div class="mn"><div class="mi mu">£</div><div><div class="sy">GBP/USD</div><div class="fl">英镑 · 次级风险预警</div></div></div><div class="mp"><div class="pv" id="gbp-price">加载中...</div><div class="pc" id="gbp-chg">--</div></div></div>
+    </div>
+    <div style="margin-top:10px;font-size:9px;color:var(--td);text-align:right;">数据源: Frankfurter.dev (ECB) · <span id="currency-update">--</span></div>
+  </div>
+  <!-- RISK GAUGE -->
+  <div class="card">
+    <div class="chdr"><div class="ct">🎯 综合风险评估</div><div class="cb bd">CRITICAL</div></div>
+    <div class="rg">
+      <div class="gw">
+        <svg viewBox="0 0 160 90">
+          <path d="M 15 85 A 65 65 0 0 1 145 85" fill="none" stroke="#1e2d3a" stroke-width="10" stroke-linecap="round"/>
+          <path d="M 15 85 A 65 65 0 0 1 55 28" fill="none" stroke="#00a870" stroke-width="10" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 55 28 A 65 65 0 0 1 105 28" fill="none" stroke="#f5a623" stroke-width="10" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 105 28 A 65 65 0 0 1 145 85" fill="none" stroke="#ff3b5c" stroke-width="10" stroke-linecap="round" opacity="0.6"/>
+          <line id="needle" x1="80" y1="85" x2="80" y2="30" stroke="#ff3b5c" stroke-width="2" stroke-linecap="round" style="transform-origin:80px 85px;transform:rotate(-90deg);transition:transform 1.5s cubic-bezier(0.4,0,0.2,1)"/>
+          <circle cx="80" cy="85" r="5" fill="#ff3b5c"/>
+          <text x="12" y="100" fill="#00a870" font-size="8" font-family="monospace">低</text>
+          <text x="74" y="18" fill="#f5a623" font-size="8" font-family="monospace">中</text>
+          <text x="140" y="100" fill="#ff3b5c" font-size="8" font-family="monospace">高</text>
+        </svg>
+        <div class="gv"><div class="gn" id="risk-score">82</div><div class="gl">RISK SCORE</div></div>
+      </div>
+      <div class="ri">
+        <div class="rj"><div class="rn">日元风险</div><div class="rbw"><div class="rb" id="bar-jpy" style="width:92%;background:linear-gradient(90deg,#c0293f,#ff3b5c)"></div></div><div class="rp dn" id="pct-jpy">92%</div></div>
+        <div class="rj"><div class="rn">英镑风险</div><div class="rbw"><div class="rb" id="bar-gbp" style="width:75%;background:linear-gradient(90deg,#c0293f,#ff3b5c)"></div></div><div class="rp dn" id="pct-gbp">75%</div></div>
+        <div class="rj"><div class="rn">美债压力</div><div class="rbw"><div class="rb" id="bar-debt" style="width:80%;background:linear-gradient(90deg,#b07010,#f5a623)"></div></div><div class="rp" id="pct-debt" style="color:var(--a)">80%</div></div>
+        <div class="rj"><div class="rn">欧元风险</div><div class="rbw"><div class="rb" id="bar-eur" style="width:65%;background:linear-gradient(90deg,#b07010,#f5a623)"></div></div><div class="rp" id="pct-eur" style="color:var(--a)">65%</div></div>
+        <div class="rj"><div class="rn">人民币稳定</div><div class="rbw"><div class="rb" id="bar-cny" style="width:85%;background:linear-gradient(90deg,#00a870,#00e5a0)"></div></div><div class="rp up" id="pct-cny">85%</div></div>
+      </div>
+    </div>
+  </div>
+  <!-- ALLOCATION -->
+  <div class="card">
+    <div class="chdr"><div class="ct">📐 资产配置优先级</div><div class="cb bi">FRAMEWORK</div></div>
+    <div class="ag">
+      <div class="ai cc"><div class="ak">首要 · 防御</div><div class="an">💵 现金储备</div><div class="ad">人民币计价，应对危机核心弹药</div><span class="as sb">增持</span></div>
+      <div class="ai c1"><div class="ak">优先级 #1</div><div class="an">🥇 黄金</div><div class="ad">金转油周期核心资产，抗通胀首选</div><span class="as sb">布局</span></div>
+      <div class="ai c2"><div class="ak">优先级 #2</div><div class="an">🥈 白银</div><div class="ad">工业+贵金属双重属性，弹性更大</div><span class="as sb">布局</span></div>
+      <div class="ai c3"><div class="ak">优先级 #3</div><div class="an">🔶 铜</div><div class="ad">工业金属，经济复苏先行指标</div><span class="as sw">观察</span></div>
+      <div class="ai c4"><div class="ak">优先级 #4</div><div class="an">🛢 石油</div><div class="ad">金转油周期终点，价格上行必然</div><span class="as sw">观察</span></div>
+      <div class="ai c5"><div class="ak">重点方向</div><div class="an">💊 生物制药</div><div class="ad">确定性最高的成长赛道</div><span class="as sb">重点</span></div>
+      <div class="ai c5"><div class="ak">关注方向</div><div class="an">🤖 人工智能</div><div class="ad">关注技术进展，选择性布局</div><span class="as sh">关注</span></div>
+      <div class="ai cr"><div class="ak">坚决减持</div><div class="an">🚫 非人民币资产</div><div class="ad">外币现金、海外资产、非必要房产</div><span class="as sr">减持</span></div>
+    </div>
+  </div>
+  <!-- CAPITAL FLOW -->
+  <div class="card">
+    <div class="chdr"><div class="ct">🌊 全球资本流向</div><div class="cb bw">TRACKING</div></div>
+    <div class="fi in"><div class="fn">美国</div><div class="fbw"><div class="fb" style="width:85%"></div></div><div class="fd up">↑ 大规模流入</div></div>
+    <div class="fi in"><div class="fn">中国</div><div class="fbw"><div class="fb" style="width:45%"></div></div><div class="fd up">↑ 稳定流入</div></div>
+    <div class="fi ot"><div class="fn">日本</div><div class="fbw"><div class="fb" style="width:78%"></div></div><div class="fd dn">↓ 大规模流出</div></div>
+    <div class="fi ot"><div class="fn">欧洲</div><div class="fbw"><div class="fb" style="width:55%"></div></div><div class="fd dn">↓ 持续流出</div></div>
+    <div class="fi ot"><div class="fn">英国</div><div class="fbw"><div class="fb" style="width:62%"></div></div><div class="fd dn">↓ 加速流出</div></div>
+    <div class="fi ot"><div class="fn">中东</div><div class="fbw"><div class="fb" style="width:40%"></div></div><div class="fd" style="color:var(--a)">↔ 主权基金调整</div></div>
+    <div style="margin-top:10px;font-size:9px;color:var(--td);">基于 TZWLG 框架分析 · 参考各国央行及香港金管局公开数据</div>
+  </div>
+  <!-- TIMELINE -->
+  <div class="card">
+    <div class="chdr"><div class="ct">📅 关键事件时间轴</div><div class="cb bd">WATCH</div></div>
+    <div class="tl">
+      <div class="ti2"><div class="td2 r"></div><div class="tde">2025年4月28日</div><div class="ttl">日元金融风险窗口</div><div class="tdc">日本央行加息决策，可能引发全球资本流向剧变，日本或面临战后第二次金融核级危机</div></div>
+      <div class="ti2"><div class="td2 w"></div><div class="tde">2025年4月28日后</div><div class="ttl">英镑风险接踵而至</div><div class="tdc">日元危机传导，英镑面临次级金融风险，全球债券股票市场共振</div></div>
+      <div class="ti2"><div class="td2 w"></div><div class="tde">2025年9月30日</div><div class="ttl">美国财政年度截止</div><div class="tdc">若美国国债突破42万亿美元警戒线，美元将爆发重大信用危机</div></div>
+      <div class="ti2"><div class="td2 b"></div><div class="tde">2025年内（18个月周期）</div><div class="ttl">金转油周期重大变局</div><div class="tdc">石油价格上行趋势确立，金转油周期核心资产布局窗口</div></div>
+      <div class="ti2"><div class="td2 g"></div><div class="tde">2027年（预期）</div><div class="ttl">向心通缩爆发</div><div class="tdc">优质低价资产大规模出现，预留充足现金准备布局。人民币国际化加速或提前触发</div></div>
+    </div>
+  </div>
+  <!-- US DEBT -->
+  <div class="card">
+    <div class="chdr"><div class="ct">🇺🇸 美国国债追踪</div><div class="cb bw">WATCH $42T</div></div>
+    <div style="text-align:center;padding:12px 0;">
+      <div style="font-size:10px;color:var(--td);letter-spacing:0.1em;margin-bottom:6px;">当前国债规模（估算）</div>
+      <div style="font-family:var(--sf);font-size:36px;font-weight:900;color:var(--a);text-shadow:0 0 20px rgba(245,166,35,0.3)" id="us-debt">$36.2T</div>
+      <div style="font-size:10px;color:var(--td);margin-top:4px;">警戒线: $42万亿美元</div>
+    </div>
+    <div style="margin:12px 0;">
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-bottom:4px;"><span>当前</span><span id="debt-pct">86.2%</span><span>警戒线 $42T</span></div>
+      <div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div id="debt-bar" style="height:100%;width:86.2%;background:linear-gradient(90deg,#b07010,#f5a623);border-radius:4px;transition:width 1s ease"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
+      <div style="padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--bd);border-radius:2px;text-align:center;"><div style="font-size:9px;color:var(--td);margin-bottom:3px;">距警戒线</div><div style="font-size:16px;font-weight:700;color:var(--r)" id="debt-gap">$5.8T</div></div>
+      <div style="padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--bd);border-radius:2px;text-align:center;"><div style="font-size:9px;color:var(--td);margin-bottom:3px;">年增速</div><div style="font-size:16px;font-weight:700;color:var(--a)">~$2T/年</div></div>
+    </div>
+    <div style="margin-top:10px;font-size:9px;color:var(--td);">参考: 美国财政部公开数据 · fiscaldata.treasury.gov</div>
+  </div>
+  <!-- STRATEGY -->
+  <div class="card sc">
+    <div class="chdr"><div class="ct">🧭 操作策略矩阵</div><div class="cb bi">TZWLG FRAMEWORK</div></div>
+    <div class="sg">
+      <div class="si rd">
+        <div class="sic">🚫</div><div class="sac">坚决减持</div>
+        <div class="st">非人民币计价资产</div>
+        <ul class="sp"><li>各类外币现金及存款</li><li>海外股票、债券资产</li><li>非必要房产</li><li>非核心企业股权</li><li>低效金融产品</li></ul>
+      </div>
+      <div class="si by">
+        <div class="sic">✅</div><div class="sac">核心布局</div>
+        <div class="st">金转油相关资产</div>
+        <ul class="sp"><li>黄金（优先级最高）</li><li>白银（弹性更大）</li><li>铜（工业金属）</li><li>石油（周期终点）</li><li>生物制药（确定性高）</li></ul>
+      </div>
+      <div class="si hd">
+        <div class="sic">💵</div><div class="sac">战略储备</div>
+        <div class="st">现金为王</div>
+        <ul class="sp"><li>逐步提高现金持有比例</li><li>人民币计价为主</li><li>应对市场危机的核心弹药</li><li>等待向心通缩后的布局机会</li><li>充足现金是最大安全边际</li></ul>
+      </div>
+      <div class="si wt">
+        <div class="sic">👁</div><div class="sac">持续观察</div>
+        <div class="st">关键信号监控</div>
+        <ul class="sp"><li>日本央行加息时间节点</li><li>美国国债突破42万亿</li><li>人民币国际化进程</li><li>香港金管局资本流动数据</li><li>中东主权财富基金动向</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="card stk-card">
+    <div class="chdr">
+      <div class="ct">🇨🇳 A股精选（卢麒元「一板斧」MACD筛选）</div>
+      <div class="cb bs">MACD月·周·日三周期共振</div>
+    </div>
+    <div class="stk-header-row">
+      <div class="stk-col-rank">#</div>
+      <div class="stk-col-info">股票</div>
+      <div class="stk-col-price">价格</div>
+      <div class="stk-col-signal">信号评级</div>
+      <div class="stk-col-analysis">核心逻辑</div>
+    </div>
+    <div class="stk-row" data-score="9">
+  <div class="stk-rank">1</div>
+  <div class="stk-info">
+    <div class="stk-name">宁德时代</div>
+    <div class="stk-symbol">300750.SZ</div>
+  </div>
+  <div class="stk-price">
+    <div class="stk-pval">¥444.20</div>
+    <div class="stk-sdate">04-17收盘</div>
+  </div>
+  <div class="stk-signal">
+    <div class="stk-level">⭐⭐⭐ 满分推荐</div>
+    <div class="stk-sig">月线金叉 · 周线上升 · 日线左脚入</div>
+    <div class="stk-tags">
+      <span class="as ss">MACD满分</span>
+      <span class="as sw">新能源</span>
+    </div>
+  </div>
+  <div class="stk-analysis">新能源电池龙头，MACD三周期共振强势，锂价回升推动盈利预期</div>
+</div>
+<div class="stk-row" data-score="9">
+  <div class="stk-rank">2</div>
+  <div class="stk-info">
+    <div class="stk-name">恩捷股份</div>
+    <div class="stk-symbol">002812.SZ</div>
+  </div>
+  <div class="stk-price">
+    <div class="stk-pval">¥71.67</div>
+    <div class="stk-sdate">04-17收盘</div>
+  </div>
+  <div class="stk-signal">
+    <div class="stk-level">⭐⭐⭐ 满分推荐</div>
+    <div class="stk-sig">月线金叉 · 周线共振 · 日线上升中</div>
+    <div class="stk-tags">
+      <span class="as ss">MACD满分</span>
+      <span class="as sw">新能源材料</span>
+    </div>
+  </div>
+  <div class="stk-analysis">锂电隔膜龙头，全球市占率第一，受益电动车渗透率持续提升</div>
+</div>
+<div class="stk-row" data-score="9">
+  <div class="stk-rank">3</div>
+  <div class="stk-info">
+    <div class="stk-name">天齐锂业</div>
+    <div class="stk-symbol">002466.SZ</div>
+  </div>
+  <div class="stk-price">
+    <div class="stk-pval">¥66.65</div>
+    <div class="stk-sdate">04-17收盘</div>
+  </div>
+  <div class="stk-signal">
+    <div class="stk-level">⭐⭐⭐ 满分推荐</div>
+    <div class="stk-sig">月线金叉 · 周线上升 · 日线上升中</div>
+    <div class="stk-tags">
+      <span class="as ss">MACD满分</span>
+      <span class="as sw">有色金属</span>
+    </div>
+  </div>
+  <div class="stk-analysis">锂矿资源龙头，全球布局，碳酸锂价格反弹直接受益标的</div>
+</div>
+<div class="stk-row" data-score="8">
+  <div class="stk-rank">4</div>
+  <div class="stk-info">
+    <div class="stk-name">三环集团</div>
+    <div class="stk-symbol">300408.SZ</div>
+  </div>
+  <div class="stk-price">
+    <div class="stk-pval">¥65.17</div>
+    <div class="stk-sdate">04-17收盘</div>
+  </div>
+  <div class="stk-signal">
+    <div class="stk-level">⭐⭐ 强势推荐</div>
+    <div class="stk-sig">月线金叉 · 周线上升 · 日线左脚入</div>
+    <div class="stk-tags">
+      <span class="as sb">MACD强势</span>
+      <span class="as sh">电子材料</span>
+    </div>
+  </div>
+  <div class="stk-analysis">电子陶瓷材料龙头，MLCC国产替代加速，业绩稳健增长</div>
+</div>
+<div class="stk-row" data-score="8">
+  <div class="stk-rank">5</div>
+  <div class="stk-info">
+    <div class="stk-name">建设银行</div>
+    <div class="stk-symbol">601939.SS</div>
+  </div>
+  <div class="stk-price">
+    <div class="stk-pval">¥9.41</div>
+    <div class="stk-sdate">04-17收盘</div>
+  </div>
+  <div class="stk-signal">
+    <div class="stk-level">⭐⭐ 强势推荐</div>
+    <div class="stk-sig">月线走强 · 周线上升 · 日线上升中</div>
+    <div class="stk-tags">
+      <span class="as sb">MACD强势</span>
+      <span class="as sh">银行防御</span>
+    </div>
+  </div>
+  <div class="stk-analysis">高股息国有大行，估值修复+股息率支撑，防御性配置首选</div>
+</div>
+    <div class="stk-footer">
+      <span>📊 数据截至 2026-04-17 收盘</span>
+      <span>筛选条件：月线MACD>0+柱递增 → 周线MACD>0+柱递增 → 日线左脚入或上升中</span>
+      <span class="stk-warn">⚠️ 仅供参考，不构成投资建议</span>
+    </div>
+  </div>
+  <div class="card wti-card">
+    <div class="chdr">
+      <div class="ct">🛢 WTI 原油 · 布林带套利区间（自伊朗开战次日 2024-04-15 起）</div>
+      <div class="cb bo">BBands ±2σ · N=20 · EIA 数据</div>
+    </div>
+    <div class="wti-meta">
+      <div class="wti-s"><div class="wti-sl">WTI 收盘价</div><div class="wti-sv" id="wti-cur" style="color:var(--a)">$--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">MA20 均线</div><div class="wti-sv" style="color:#00e5a0" id="wti-ma20">$--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">布林上轨 +2σ</div><div class="wti-sv" style="color:#ff6b7a" id="wti-ub">$--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">布林下轨 -2σ</div><div class="wti-sv" style="color:#00e5a0" id="wti-lb">$--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">通道宽度</div><div class="wti-sv" style="color:var(--a)" id="wti-bw">$--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">距MA20偏离</div><div class="wti-sv" id="wti-dev">--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">周期最高</div><div class="wti-sv" style="color:var(--a);font-size:14px" id="wti-max">$--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">周期最低</div><div class="wti-sv" style="color:var(--bl);font-size:14px" id="wti-min">$--</div></div>
+      <div class="wti-div"></div>
+      <div class="wti-s"><div class="wti-sl">数据区间</div><div class="wti-sv" style="font-size:12px;color:var(--td)" id="wti-range">--</div></div>
+    </div>
+    <div class="wti-legend">
+      <div class="li2"><div class="ll" style="background:#f5a623"></div>WTI 收盘价</div>
+      <div class="li2"><div class="ll" style="background:#00e5a0"></div>MA20 均线</div>
+      <div class="li2"><div class="ld2" style="border-top-color:rgba(255,107,122,0.7)"></div>布林上轨 (+2σ)</div>
+      <div class="li2"><div class="ld2" style="border-top-color:rgba(255,107,122,0.7)"></div>布林下轨 (-2σ)</div>
+      <div class="li2"><div class="la2" style="background:rgba(255,107,122,0.1)"></div>套利通道</div>
+      <div class="li2" style="margin-left:auto;color:var(--r);font-weight:700">⚑ 伊朗开战次日 2024-04-15</div>
+    </div>
+    <div class="wti-chart-wrap" id="wti-chart-wrap">
+      <div class="wti-scroll-container" id="wti-scroll-container">
+        <svg id="wti-svg" viewBox="0 0 1200 300" preserveAspectRatio="none" width="1200" height="300">
+          <text x="600" y="150" text-anchor="middle" fill="#6a8a9a" font-family="Space Mono,monospace" font-size="13">正在加载 WTI 布林带图表...</text>
+        </svg>
+      </div>
+      <!-- Hover tooltip -->
+      <div class="wti-tooltip" id="wti-tooltip" style="display:none">
+        <div class="wti-tt-date" id="wti-tt-date">--</div>
+        <div class="wti-tt-price" id="wti-tt-price">$--</div>
+        <div class="wti-tt-ma">MA20: <span id="wti-tt-ma">--</span></div>
+        <div class="wti-tt-band">上轨: <span id="wti-tt-ub">--</span> 下轨: <span id="wti-tt-lb">--</span></div>
+        <div class="wti-tt-pos" id="wti-tt-pos">--</div>
+      </div>
+      <!-- Crosshair line -->
+      <div class="wti-crosshair" id="wti-crosshair" style="display:none"></div>
+    </div>
+    <!-- Scrollbar -->
+    <div class="wti-scrollbar-wrap">
+      <div class="wti-scrollbar" id="wti-scrollbar">
+        <div class="wti-scrollbar-track">
+          <div class="wti-scrollbar-thumb" id="wti-thumb"></div>
+        </div>
+        <div class="wti-scrollbar-hint">← 左右拖动滚动 · 鼠标悬停查看价格 →</div>
+      </div>
+    </div>
+    <div class="wti-ft">数据来源: EIA Cushing OK WTI Spot Price FOB ($/桶) · 自伊朗袭击以色列次日(2024-04-15)起 · 布林带参数: N=20, σ=2 · <span id="wti-note">--</span></div>
+  </div>
+
+  <div class="dc">
+    <strong>⚠ 重要声明：</strong>本仪表盘基于 TZWLG 视频"课补1"的分析框架构建，所有观点均为作者个人分析，<strong>不构成任何投资建议</strong>。WTI 布林带数据来源于 EIA 历史记录，仅供参考，不构成交易依据。投资有风险，入市需谨慎。
+  </div>
+</main>
+
+<footer class="ft">
+  <div>全球金融风险决策仪表盘 · 基于 TZWLG 课补1 框架</div>
+  <div>数据: Stooq · Frankfurter.dev (ECB) · EIA</div>
+  <div id="last-update">最后更新: --</div>
+</footer>
+<script>
+// ══ WTI DATA (EIA Cushing OK WTI, 2024-04-15 → 2026-04-13, 496 daily points) ══
+const WTI_DATA=[{"d":"2024-04-15","p":86.21,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-16","p":86.15,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-17","p":83.58,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-18","p":83.5,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-19","p":83.79,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-22","p":83.82,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-23","p":84.17,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-24","p":84.09,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-25","p":84.92,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-26","p":85.38,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-29","p":84.26,"ma20":null,"ub":null,"lb":null},{"d":"2024-04-30","p":83.49,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-01","p":80.7,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-02","p":80.59,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-03","p":79.65,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-06","p":80.1,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-07","p":79.97,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-08","p":80.57,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-09","p":80.86,"ma20":null,"ub":null,"lb":null},{"d":"2024-05-10","p":79.81,"ma20":82.78,"ub":87.15,"lb":78.41},{"d":"2024-05-13","p":80.71,"ma20":82.51,"ub":86.66,"lb":78.35},{"d":"2024-05-14","p":79.62,"ma20":82.18,"ub":86.16,"lb":78.19},{"d":"2024-05-15","p":80.23,"ma20":82.01,"ub":86.03,"lb":78.0},{"d":"2024-05-16","p":80.85,"ma20":81.88,"ub":85.86,"lb":77.89},{"d":"2024-05-17","p":81.66,"ma20":81.77,"ub":85.66,"lb":77.88},{"d":"2024-05-20","p":81.39,"ma20":81.65,"ub":85.43,"lb":77.88},{"d":"2024-05-21","p":80.66,"ma20":81.48,"ub":85.09,"lb":77.86},{"d":"2024-05-22","p":79.15,"ma20":81.23,"ub":84.77,"lb":77.69},{"d":"2024-05-23","p":77.47,"ma20":80.86,"ub":84.33,"lb":77.38},{"d":"2024-05-24","p":78.48,"ma20":80.51,"ub":83.45,"lb":77.57},{"d":"2024-05-28","p":80.9,"ma20":80.34,"ub":82.74,"lb":77.95},{"d":"2024-05-29","p":80.24,"ma20":80.18,"ub":82.09,"lb":78.27},{"d":"2024-05-30","p":78.96,"ma20":80.09,"ub":82.06,"lb":78.13},{"d":"2024-05-31","p":77.97,"ma20":79.96,"ub":82.12,"lb":77.81},{"d":"2024-06-03","p":75.26,"ma20":79.74,"ub":82.72,"lb":76.77},{"d":"2024-06-04","p":74.27,"ma20":79.45,"ub":83.26,"lb":75.65},{"d":"2024-06-05","p":75.08,"ma20":79.21,"ub":83.45,"lb":74.96},{"d":"2024-06-06","p":76.52,"ma20":79.0,"ub":83.35,"lb":74.65},{"d":"2024-06-07","p":76.53,"ma20":78.79,"ub":83.18,"lb":74.4},{"d":"2024-06-10","p":78.75,"ma20":78.73,"ub":83.1,"lb":74.37},{"d":"2024-06-11","p":78.88,"ma20":78.64,"ub":82.91,"lb":74.37},{"d":"2024-06-12","p":79.56,"ma20":78.64,"ub":82.91,"lb":74.37},{"d":"2024-06-13","p":79.61,"ma20":78.61,"ub":82.84,"lb":74.38},{"d":"2024-06-14","p":79.41,"ma20":78.54,"ub":82.66,"lb":74.41},{"d":"2024-06-17","p":81.33,"ma20":78.52,"ub":82.6,"lb":74.45},{"d":"2024-06-18","p":82.67,"ma20":78.59,"ub":82.87,"lb":74.3},{"d":"2024-06-20","p":83.34,"ma20":78.72,"ub":83.41,"lb":74.03},{"d":"2024-06-21","p":81.71,"ma20":78.85,"ub":83.71,"lb":73.98},{"d":"2024-06-24","p":82.63,"ma20":79.1,"ub":84.19,"lb":74.02},{"d":"2024-06-25","p":81.97,"ma20":79.28,"ub":84.51,"lb":74.05},{"d":"2024-06-26","p":82.19,"ma20":79.34,"ub":84.68,"lb":74.01},{"d":"2024-06-27","p":83.04,"ma20":79.48,"ub":85.05,"lb":73.92},{"d":"2024-06-28","p":82.83,"ma20":79.68,"ub":85.42,"lb":73.93},{"d":"2024-07-01","p":84.7,"ma20":80.01,"ub":86.1,"lb":73.93},{"d":"2024-07-02","p":84.09,"ma20":80.46,"ub":86.37,"lb":74.54},{"d":"2024-07-03","p":85.19,"ma20":81.0,"ub":86.54,"lb":75.46},{"d":"2024-07-05","p":84.44,"ma20":81.47,"ub":86.48,"lb":76.45},{"d":"2024-07-08","p":83.63,"ma20":81.83,"ub":86.37,"lb":77.28},{"d":"2024-07-09","p":82.78,"ma20":82.14,"ub":85.99,"lb":78.28},{"d":"2024-07-10","p":83.39,"ma20":82.37,"ub":85.93,"lb":78.81},{"d":"2024-07-11","p":83.92,"ma20":82.62,"ub":85.86,"lb":79.39},{"d":"2024-07-12","p":83.49,"ma20":82.82,"ub":85.75,"lb":79.89},{"d":"2024-07-15","p":83.22,"ma20":83.0,"ub":85.53,"lb":80.46},{"d":"2024-07-16","p":81.92,"ma20":83.12,"ub":85.13,"lb":81.12},{"d":"2024-07-17","p":84.16,"ma20":83.27,"ub":85.14,"lb":81.39},{"d":"2024-07-18","p":84.17,"ma20":83.34,"ub":85.23,"lb":81.45},{"d":"2024-07-19","p":81.43,"ma20":83.25,"ub":85.31,"lb":81.18},{"d":"2024-07-22","p":81.25,"ma20":83.22,"ub":85.37,"lb":81.08},{"d":"2024-07-23","p":78.24,"ma20":83.0,"ub":86.05,"lb":79.95},{"d":"2024-07-24","p":78.78,"ma20":82.84,"ub":86.39,"lb":79.3},{"d":"2024-07-25","p":79.43,"ma20":82.7,"ub":86.54,"lb":78.87},{"d":"2024-07-26","p":78.58,"ma20":82.48,"ub":86.71,"lb":78.25},{"d":"2024-07-29","p":77.27,"ma20":82.2,"ub":87.0,"lb":77.41},{"d":"2024-07-30","p":76.17,"ma20":81.78,"ub":87.1,"lb":76.46},{"d":"2024-07-31","p":79.36,"ma20":81.54,"ub":86.85,"lb":76.23},{"d":"2024-08-01","p":77.74,"ma20":81.17,"ub":86.45,"lb":75.89},{"d":"2024-08-02","p":74.99,"ma20":80.7,"ub":86.39,"lb":75.0},{"d":"2024-08-05","p":74.46,"ma20":80.24,"ub":86.38,"lb":74.1},{"d":"2024-08-06","p":74.6,"ma20":79.83,"ub":86.31,"lb":73.34},{"d":"2024-08-07","p":76.68,"ma20":79.49,"ub":85.9,"lb":73.09},{"d":"2024-08-08","p":77.64,"ma20":79.18,"ub":85.3,"lb":73.06},{"d":"2024-08-09","p":78.28,"ma20":78.92,"ub":84.72,"lb":73.12},{"d":"2024-08-12","p":81.45,"ma20":78.83,"ub":84.41,"lb":73.25},{"d":"2024-08-13","p":79.81,"ma20":78.72,"ub":84.15,"lb":73.3},{"d":"2024-08-14","p":78.47,"ma20":78.44,"ub":83.25,"lb":73.63},{"d":"2024-08-15","p":79.66,"ma20":78.21,"ub":82.3,"lb":74.13},{"d":"2024-08-16","p":78.05,"ma20":78.05,"ub":81.86,"lb":74.23},{"d":"2024-08-19","p":75.82,"ma20":77.77,"ub":81.4,"lb":74.15},{"d":"2024-08-20","p":75.27,"ma20":77.63,"ub":81.41,"lb":73.85},{"d":"2024-08-21","p":72.76,"ma20":77.32,"ub":81.61,"lb":73.04},{"d":"2024-08-22","p":73.72,"ma20":77.04,"ub":81.49,"lb":72.59},{"d":"2024-08-23","p":75.82,"ma20":76.9,"ub":81.32,"lb":72.48},{"d":"2024-08-26","p":78.4,"ma20":76.96,"ub":81.42,"lb":72.49},{"d":"2024-08-27","p":76.5,"ma20":76.97,"ub":81.43,"lb":72.52},{"d":"2024-08-28","p":75.49,"ma20":76.78,"ub":81.14,"lb":72.42},{"d":"2024-08-29","p":76.9,"ma20":76.74,"ub":81.08,"lb":72.4},{"d":"2024-08-30","p":74.52,"ma20":76.72,"ub":81.1,"lb":72.33},{"d":"2024-09-03","p":71.28,"ma20":76.56,"ub":81.45,"lb":71.66},{"d":"2024-09-04","p":70.11,"ma20":76.33,"ub":81.93,"lb":70.73},{"d":"2024-09-05","p":70.09,"ma20":76.0,"ub":82.22,"lb":69.78},{"d":"2024-09-06","p":68.58,"ma20":75.55,"ub":82.5,"lb":68.6},{"d":"2024-09-09","p":69.65,"ma20":75.12,"ub":82.4,"lb":67.83},{"d":"2024-09-10","p":66.73,"ma20":74.38,"ub":81.93,"lb":66.84},{"d":"2024-09-11","p":68.25,"ma20":73.8,"ub":81.37,"lb":66.24},{"d":"2024-09-12","p":69.89,"ma20":73.37,"ub":80.8,"lb":65.95},{"d":"2024-09-13","p":69.59,"ma20":72.87,"ub":79.88,"lb":65.86},{"d":"2024-09-16","p":71.1,"ma20":72.52,"ub":79.15,"lb":65.9},{"d":"2024-09-17","p":72.16,"ma20":72.34,"ub":78.79,"lb":65.89},{"d":"2024-09-18","p":71.87,"ma20":72.17,"ub":78.48,"lb":65.86},{"d":"2024-09-19","p":72.86,"ma20":72.18,"ub":78.49,"lb":65.86},{"d":"2024-09-20","p":72.72,"ma20":72.13,"ub":78.41,"lb":65.85},{"d":"2024-09-23","p":71.33,"ma20":71.9,"ub":77.95,"lb":65.85},{"d":"2024-09-24","p":72.34,"ma20":71.6,"ub":76.88,"lb":66.32},{"d":"2024-09-25","p":70.42,"ma20":71.29,"ub":76.09,"lb":66.5},{"d":"2024-09-26","p":68.28,"ma20":70.93,"ub":75.49,"lb":66.38},{"d":"2024-09-27","p":68.72,"ma20":70.52,"ub":74.26,"lb":66.79},{"d":"2024-09-30","p":68.75,"ma20":70.24,"ub":73.56,"lb":66.91},{"d":"2024-10-01","p":70.41,"ma20":70.19,"ub":73.48,"lb":66.9},{"d":"2024-10-02","p":70.74,"ma20":70.22,"ub":73.52,"lb":66.93},{"d":"2024-10-03","p":74.33,"ma20":70.44,"ub":74.18,"lb":66.69},{"d":"2024-10-04","p":74.93,"ma20":70.75,"ub":74.88,"lb":66.63},{"d":"2024-10-07","p":77.76,"ma20":71.16,"ub":76.25,"lb":66.07},{"d":"2024-10-08","p":74.26,"ma20":71.54,"ub":76.37,"lb":66.7},{"d":"2024-10-09","p":73.85,"ma20":71.82,"ub":76.5,"lb":67.13},{"d":"2024-10-10","p":76.46,"ma20":72.14,"ub":77.15,"lb":67.13},{"d":"2024-10-11","p":76.11,"ma20":72.47,"ub":77.62,"lb":67.32},{"d":"2024-10-15","p":71.22,"ma20":72.48,"ub":77.62,"lb":67.33},{"d":"2024-10-16","p":70.97,"ma20":72.42,"ub":77.6,"lb":67.23},{"d":"2024-10-17","p":71.26,"ma20":72.39,"ub":77.59,"lb":67.18},{"d":"2024-10-18","p":69.78,"ma20":72.23,"ub":77.55,"lb":66.91},{"d":"2024-10-21","p":71.16,"ma20":72.15,"ub":77.49,"lb":66.82},{"d":"2024-10-22","p":72.84,"ma20":72.23,"ub":77.56,"lb":66.9},{"d":"2024-10-23","p":71.37,"ma20":72.18,"ub":77.52,"lb":66.84},{"d":"2024-10-24","p":70.58,"ma20":72.19,"ub":77.52,"lb":66.86},{"d":"2024-10-25","p":72.02,"ma20":72.38,"ub":77.4,"lb":67.35},{"d":"2024-10-28","p":67.65,"ma20":72.32,"ub":77.52,"lb":67.13},{"d":"2024-10-29","p":67.48,"ma20":72.26,"ub":77.66,"lb":66.86},{"d":"2024-10-30","p":68.91,"ma20":72.18,"ub":77.72,"lb":66.65},{"d":"2024-10-31","p":69.58,"ma20":72.13,"ub":77.75,"lb":66.51},{"d":"2024-11-01","p":69.81,"ma20":71.9,"ub":77.51,"lb":66.29},{"d":"2024-11-04","p":71.83,"ma20":71.75,"ub":77.18,"lb":66.31},{"d":"2024-11-05","p":72.26,"ma20":71.47,"ub":76.17,"lb":66.77},{"d":"2024-11-06","p":71.98,"ma20":71.36,"ub":75.88,"lb":66.83},{"d":"2024-11-07","p":72.69,"ma20":71.3,"ub":75.73,"lb":66.87},{"d":"2024-11-08","p":70.69,"ma20":71.01,"ub":74.75,"lb":67.27},{"d":"2024-11-12","p":68.43,"ma20":70.63,"ub":73.72,"lb":67.53},{"d":"2024-11-13","p":68.76,"ma20":70.5,"ub":73.68,"lb":67.32},{"d":"2024-11-14","p":68.99,"ma20":70.4,"ub":73.64,"lb":67.16},{"d":"2024-11-15","p":67.33,"ma20":70.21,"ub":73.68,"lb":66.73},{"d":"2024-11-18","p":69.46,"ma20":70.19,"ub":73.68,"lb":66.7},{"d":"2024-11-19","p":69.75,"ma20":70.12,"ub":73.58,"lb":66.66},{"d":"2024-11-20","p":69.25,"ma20":69.94,"ub":73.19,"lb":66.7},{"d":"2024-11-21","p":70.39,"ma20":69.89,"ub":73.08,"lb":66.71},{"d":"2024-11-22","p":71.68,"ma20":69.95,"ub":73.22,"lb":66.68},{"d":"2024-11-25","p":69.41,"ma20":69.82,"ub":72.95,"lb":66.68},{"d":"2024-11-26","p":69.05,"ma20":69.89,"ub":72.88,"lb":66.89},{"d":"2024-11-27","p":69.03,"ma20":69.96,"ub":72.78,"lb":67.15},{"d":"2024-11-29","p":68.26,"ma20":69.93,"ub":72.81,"lb":67.05},{"d":"2024-12-02","p":68.35,"ma20":69.87,"ub":72.83,"lb":66.91},{"d":"2024-12-03","p":70.15,"ma20":69.89,"ub":72.85,"lb":66.93},{"d":"2024-12-04","p":68.81,"ma20":69.74,"ub":72.59,"lb":66.88},{"d":"2024-12-05","p":68.58,"ma20":69.55,"ub":72.2,"lb":66.9},{"d":"2024-12-06","p":68.58,"ma20":69.38,"ub":71.81,"lb":66.95},{"d":"2024-12-09","p":68.65,"ma20":69.18,"ub":71.09,"lb":67.27},{"d":"2024-12-10","p":68.85,"ma20":69.09,"ub":70.87,"lb":67.3},{"d":"2024-12-11","p":70.57,"ma20":69.2,"ub":71.07,"lb":67.32},{"d":"2024-12-12","p":70.25,"ma20":69.27,"ub":71.18,"lb":67.36},{"d":"2024-12-13","p":71.54,"ma20":69.4,"ub":71.54,"lb":67.25},{"d":"2024-12-16","p":71.03,"ma20":69.58,"ub":71.62,"lb":67.54},{"d":"2024-12-17","p":70.31,"ma20":69.62,"ub":71.69,"lb":67.56},{"d":"2024-12-18","p":70.8,"ma20":69.68,"ub":71.8,"lb":67.55},{"d":"2024-12-19","p":70.1,"ma20":69.72,"ub":71.84,"lb":67.6},{"d":"2024-12-20","p":69.71,"ma20":69.69,"ub":71.79,"lb":67.59},{"d":"2024-12-23","p":69.5,"ma20":69.58,"ub":71.47,"lb":67.69},{"d":"2024-12-24","p":70.87,"ma20":69.65,"ub":71.62,"lb":67.68},{"d":"2024-12-26","p":70.38,"ma20":69.72,"ub":71.69,"lb":67.74},{"d":"2024-12-27","p":71.28,"ma20":69.83,"ub":71.89,"lb":67.77},{"d":"2024-12-30","p":71.73,"ma20":70.0,"ub":72.09,"lb":67.92},{"d":"2024-12-31","p":72.44,"ma20":70.21,"ub":72.4,"lb":68.01},{"d":"2025-01-02","p":73.79,"ma20":70.39,"ub":73.08,"lb":67.69},{"d":"2025-01-03","p":74.64,"ma20":70.68,"ub":73.85,"lb":67.51},{"d":"2025-01-06","p":74.31,"ma20":70.97,"ub":74.35,"lb":67.58},{"d":"2025-01-07","p":74.99,"ma20":71.29,"ub":74.91,"lb":67.66},{"d":"2025-01-08","p":73.99,"ma20":71.55,"ub":75.15,"lb":67.96},{"d":"2025-01-10","p":77.27,"ma20":71.97,"ub":76.13,"lb":67.82},{"d":"2025-01-13","p":79.57,"ma20":72.42,"ub":77.68,"lb":67.17},{"d":"2025-01-14","p":78.2,"ma20":72.82,"ub":78.54,"lb":67.1},{"d":"2025-01-15","p":80.73,"ma20":73.28,"ub":79.92,"lb":66.64},{"d":"2025-01-16","p":79.35,"ma20":73.7,"ub":80.75,"lb":66.65},{"d":"2025-01-17","p":78.56,"ma20":74.11,"ub":81.28,"lb":66.94},{"d":"2025-01-21","p":76.79,"ma20":74.41,"ub":81.51,"lb":67.31},{"d":"2025-01-22","p":76.12,"ma20":74.71,"ub":81.56,"lb":67.87},{"d":"2025-01-23","p":75.03,"ma20":74.98,"ub":81.43,"lb":68.53},{"d":"2025-01-24","p":74.97,"ma20":75.25,"ub":81.19,"lb":69.31},{"d":"2025-01-27","p":73.51,"ma20":75.38,"ub":81.04,"lb":69.73},{"d":"2025-01-28","p":74.15,"ma20":75.57,"ub":80.78,"lb":70.36},{"d":"2025-01-29","p":72.94,"ma20":75.65,"ub":80.64,"lb":70.67},{"d":"2025-01-30","p":73.1,"ma20":75.72,"ub":80.52,"lb":70.92},{"d":"2025-01-31","p":72.84,"ma20":75.74,"ub":80.49,"lb":71.0},{"d":"2025-02-03","p":73.52,"ma20":75.73,"ub":80.5,"lb":70.96},{"d":"2025-02-04","p":73.04,"ma20":75.65,"ub":80.54,"lb":70.76},{"d":"2025-02-05","p":71.39,"ma20":75.5,"ub":80.71,"lb":70.29},{"d":"2025-02-06","p":70.97,"ma20":75.3,"ub":80.87,"lb":69.73},{"d":"2025-02-07","p":71.32,"ma20":75.17,"ub":80.98,"lb":69.36},{"d":"2025-02-10","p":72.73,"ma20":74.94,"ub":80.76,"lb":69.12},{"d":"2025-02-11","p":73.67,"ma20":74.65,"ub":80.08,"lb":69.21},{"d":"2025-02-12","p":71.72,"ma20":74.32,"ub":79.65,"lb":69.0},{"d":"2025-02-13","p":71.66,"ma20":73.87,"ub":78.42,"lb":69.32},{"d":"2025-02-14","p":71.05,"ma20":73.45,"ub":77.41,"lb":69.5},{"d":"2025-02-18","p":72.21,"ma20":73.14,"ub":76.35,"lb":69.93},{"d":"2025-02-19","p":72.58,"ma20":72.93,"ub":75.67,"lb":70.18},{"d":"2025-02-20","p":72.88,"ma20":72.76,"ub":75.08,"lb":70.44},{"d":"2025-02-21","p":70.72,"ma20":72.55,"ub":74.78,"lb":70.31},{"d":"2025-02-24","p":71.06,"ma20":72.35,"ub":74.38,"lb":70.32},{"d":"2025-02-25","p":69.15,"ma20":72.14,"ub":74.53,"lb":69.74},{"d":"2025-02-26","p":68.87,"ma20":71.87,"ub":74.47,"lb":69.27},{"d":"2025-02-27","p":70.62,"ma20":71.75,"ub":74.36,"lb":69.15},{"d":"2025-02-28","p":69.97,"ma20":71.6,"ub":74.24,"lb":68.96},{"d":"2025-03-03","p":68.63,"ma20":71.39,"ub":74.26,"lb":68.52},{"d":"2025-03-04","p":68.47,"ma20":71.14,"ub":74.1,"lb":68.17},{"d":"2025-03-05","p":66.58,"ma20":70.81,"ub":74.25,"lb":67.38},{"d":"2025-03-06","p":66.62,"ma20":70.57,"ub":74.45,"lb":66.7},{"d":"2025-03-07","p":67.29,"ma20":70.39,"ub":74.51,"lb":66.27},{"d":"2025-03-10","p":66.31,"ma20":70.14,"ub":74.6,"lb":65.68},{"d":"2025-03-11","p":66.52,"ma20":69.83,"ub":74.39,"lb":65.27},{"d":"2025-03-12","p":67.65,"ma20":69.53,"ub":73.82,"lb":65.23},{"d":"2025-03-13","p":66.82,"ma20":69.28,"ub":73.61,"lb":64.96},{"d":"2025-03-14","p":67.43,"ma20":69.07,"ub":73.32,"lb":64.82},{"d":"2025-03-17","p":67.84,"ma20":68.91,"ub":73.09,"lb":64.73},{"d":"2025-03-18","p":67.49,"ma20":68.67,"ub":72.61,"lb":64.74},{"d":"2025-03-19","p":67.4,"ma20":68.42,"ub":71.95,"lb":64.88},{"d":"2025-03-20","p":68.55,"ma20":68.2,"ub":71.09,"lb":65.31},{"d":"2025-03-21","p":68.52,"ma20":68.09,"ub":70.74,"lb":65.44},{"d":"2025-03-24","p":69.46,"ma20":68.01,"ub":70.38,"lb":65.64},{"d":"2025-03-25","p":69.48,"ma20":68.03,"ub":70.43,"lb":65.62},{"d":"2025-03-26","p":70.05,"ma20":68.09,"ub":70.63,"lb":65.54},{"d":"2025-03-27","p":70.3,"ma20":68.07,"ub":70.55,"lb":65.59},{"d":"2025-03-28","p":69.74,"ma20":68.06,"ub":70.5,"lb":65.61},{"d":"2025-03-31","p":71.87,"ma20":68.22,"ub":71.17,"lb":65.27},{"d":"2025-04-01","p":71.61,"ma20":68.38,"ub":71.68,"lb":65.07},{"d":"2025-04-02","p":72.12,"ma20":68.65,"ub":72.23,"lb":65.08},{"d":"2025-04-03","p":67.43,"ma20":68.69,"ub":72.19,"lb":65.2},{"d":"2025-04-04","p":62.42,"ma20":68.45,"ub":72.86,"lb":64.04},{"d":"2025-04-07","p":61.05,"ma20":68.19,"ub":73.59,"lb":62.78},{"d":"2025-04-08","p":60.04,"ma20":67.86,"ub":74.31,"lb":61.42},{"d":"2025-04-09","p":62.63,"ma20":67.61,"ub":74.45,"lb":60.78},{"d":"2025-04-10","p":60.57,"ma20":67.3,"ub":74.79,"lb":59.81},{"d":"2025-04-11","p":61.91,"ma20":67.02,"ub":74.88,"lb":59.17},{"d":"2025-04-14","p":61.99,"ma20":66.73,"ub":74.87,"lb":58.59},{"d":"2025-04-15","p":61.74,"ma20":66.44,"ub":74.86,"lb":58.03},{"d":"2025-04-16","p":62.88,"ma20":66.22,"ub":74.76,"lb":57.68},{"d":"2025-04-17","p":65.07,"ma20":66.04,"ub":74.53,"lb":57.56},{"d":"2025-04-21","p":63.48,"ma20":65.79,"ub":74.27,"lb":57.32},{"d":"2025-04-22","p":64.6,"ma20":65.55,"ub":73.87,"lb":57.23},{"d":"2025-04-23","p":62.64,"ma20":65.21,"ub":73.41,"lb":57.0},{"d":"2025-04-24","p":63.55,"ma20":64.88,"ub":72.8,"lb":56.96},{"d":"2025-04-25","p":63.85,"ma20":64.56,"ub":72.09,"lb":57.03},{"d":"2025-04-28","p":63.3,"ma20":64.24,"ub":71.39,"lb":57.08},{"d":"2025-04-29","p":61.84,"ma20":63.74,"ub":70.04,"lb":57.43},{"d":"2025-04-30","p":59.55,"ma20":63.13,"ub":68.55,"lb":57.72},{"d":"2025-05-01","p":60.59,"ma20":62.56,"ub":66.18,"lb":58.93},{"d":"2025-05-02","p":59.67,"ma20":62.17,"ub":65.25,"lb":59.09},{"d":"2025-05-05","p":58.5,"ma20":61.97,"ub":65.44,"lb":58.51},{"d":"2025-05-06","p":60.42,"ma20":61.94,"ub":65.45,"lb":58.43},{"d":"2025-05-07","p":59.42,"ma20":61.91,"ub":65.5,"lb":58.32},{"d":"2025-05-08","p":61.25,"ma20":61.84,"ub":65.42,"lb":58.26},{"d":"2025-05-09","p":62.37,"ma20":61.93,"ub":65.47,"lb":58.39},{"d":"2025-05-12","p":63.32,"ma20":62.0,"ub":65.59,"lb":58.41},{"d":"2025-05-13","p":65.04,"ma20":62.15,"ub":65.98,"lb":58.33},{"d":"2025-05-14","p":64.48,"ma20":62.29,"ub":66.24,"lb":58.34},{"d":"2025-05-15","p":63.03,"ma20":62.3,"ub":66.25,"lb":58.34},{"d":"2025-05-16","p":63.84,"ma20":62.24,"ub":66.05,"lb":58.42},{"d":"2025-05-19","p":63.98,"ma20":62.26,"ub":66.12,"lb":58.41},{"d":"2025-05-20","p":63.97,"ma20":62.23,"ub":66.02,"lb":58.44},{"d":"2025-05-21","p":62.93,"ma20":62.25,"ub":66.04,"lb":58.45},{"d":"2025-05-22","p":62.55,"ma20":62.2,"ub":65.95,"lb":58.44},{"d":"2025-05-23","p":62.89,"ma20":62.15,"ub":65.84,"lb":58.46},{"d":"2025-05-27","p":61.61,"ma20":62.06,"ub":65.72,"lb":58.4},{"d":"2025-05-28","p":62.54,"ma20":62.1,"ub":65.76,"lb":58.43},{"d":"2025-05-29","p":61.66,"ma20":62.2,"ub":65.68,"lb":58.72},{"d":"2025-05-30","p":61.46,"ma20":62.25,"ub":65.67,"lb":58.83},{"d":"2025-06-02","p":63.27,"ma20":62.43,"ub":65.66,"lb":59.19},{"d":"2025-06-03","p":64.1,"ma20":62.71,"ub":65.47,"lb":59.95},{"d":"2025-06-04","p":63.57,"ma20":62.86,"ub":65.44,"lb":60.29},{"d":"2025-06-05","p":64.06,"ma20":63.1,"ub":65.17,"lb":61.02},{"d":"2025-06-06","p":65.3,"ma20":63.3,"ub":65.41,"lb":61.19},{"d":"2025-06-09","p":65.99,"ma20":63.48,"ub":65.84,"lb":61.11},{"d":"2025-06-10","p":65.66,"ma20":63.6,"ub":66.14,"lb":61.05},{"d":"2025-06-11","p":68.91,"ma20":63.79,"ub":67.19,"lb":60.39},{"d":"2025-06-12","p":68.73,"ma20":64.0,"ub":68.02,"lb":59.98},{"d":"2025-06-13","p":73.84,"ma20":64.54,"ub":70.39,"lb":58.7},{"d":"2025-06-16","p":72.53,"ma20":64.98,"ub":71.76,"lb":58.19},{"d":"2025-06-17","p":75.62,"ma20":65.56,"ub":73.76,"lb":57.36},{"d":"2025-06-18","p":75.89,"ma20":66.16,"ub":75.46,"lb":56.85},{"d":"2025-06-20","p":75.72,"ma20":66.8,"ub":76.85,"lb":56.74},{"d":"2025-06-23","p":69.36,"ma20":67.14,"ub":77.06,"lb":57.22},{"d":"2025-06-24","p":65.45,"ma20":67.26,"ub":77.03,"lb":57.5},{"d":"2025-06-25","p":65.98,"ma20":67.48,"ub":76.92,"lb":58.05},{"d":"2025-06-26","p":66.44,"ma20":67.68,"ub":76.86,"lb":58.5},{"d":"2025-06-27","p":66.66,"ma20":67.93,"ub":76.7,"lb":59.15},{"d":"2025-06-30","p":66.3,"ma20":68.17,"ub":76.47,"lb":59.87},{"d":"2025-07-01","p":66.64,"ma20":68.34,"ub":76.36,"lb":60.31},{"d":"2025-07-02","p":68.66,"ma20":68.57,"ub":76.35,"lb":60.78},{"d":"2025-07-03","p":68.13,"ma20":68.79,"ub":76.24,"lb":61.34},{"d":"2025-07-07","p":69.16,"ma20":69.05,"ub":76.17,"lb":61.92},{"d":"2025-07-08","p":69.55,"ma20":69.26,"ub":76.18,"lb":62.34},{"d":"2025-07-09","p":69.61,"ma20":69.44,"ub":76.19,"lb":62.69},{"d":"2025-07-10","p":67.78,"ma20":69.55,"ub":76.12,"lb":62.97},{"d":"2025-07-11","p":69.63,"ma20":69.58,"ub":76.15,"lb":63.01},{"d":"2025-07-14","p":68.19,"ma20":69.56,"ub":76.14,"lb":62.97},{"d":"2025-07-15","p":67.76,"ma20":69.25,"ub":75.58,"lb":62.93},{"d":"2025-07-16","p":67.13,"ma20":68.98,"ub":75.19,"lb":62.78},{"d":"2025-07-17","p":68.76,"ma20":68.64,"ub":74.04,"lb":63.24},{"d":"2025-07-18","p":68.53,"ma20":68.27,"ub":72.53,"lb":64.01},{"d":"2025-07-21","p":68.39,"ma20":67.91,"ub":70.46,"lb":65.35},{"d":"2025-07-22","p":67.56,"ma20":67.82,"ub":70.28,"lb":65.35},{"d":"2025-07-23","p":66.05,"ma20":67.85,"ub":70.21,"lb":65.48},{"d":"2025-07-24","p":67.16,"ma20":67.9,"ub":70.13,"lb":65.68},{"d":"2025-07-25","p":66.38,"ma20":67.9,"ub":70.14,"lb":65.66},{"d":"2025-07-28","p":67.81,"ma20":67.96,"ub":70.12,"lb":65.79},{"d":"2025-07-29","p":70.27,"ma20":68.16,"ub":70.4,"lb":65.91},{"d":"2025-07-30","p":71.09,"ma20":68.38,"ub":70.85,"lb":65.91},{"d":"2025-07-31","p":70.36,"ma20":68.47,"ub":71.08,"lb":65.85},{"d":"2025-08-01","p":68.39,"ma20":68.48,"ub":71.09,"lb":65.87},{"d":"2025-08-04","p":67.33,"ma20":68.39,"ub":71.02,"lb":65.75},{"d":"2025-08-05","p":66.2,"ma20":68.22,"ub":70.96,"lb":65.47},{"d":"2025-08-06","p":65.38,"ma20":68.01,"ub":70.94,"lb":65.08},{"d":"2025-08-07","p":64.9,"ma20":67.86,"ub":71.09,"lb":64.64},{"d":"2025-08-08","p":64.94,"ma20":67.63,"ub":70.99,"lb":64.27},{"d":"2025-08-11","p":65.03,"ma20":67.47,"ub":71.0,"lb":63.94},{"d":"2025-08-12","p":64.22,"ma20":67.29,"ub":71.09,"lb":63.49},{"d":"2025-08-13","p":63.68,"ma20":67.12,"ub":71.24,"lb":63.01},{"d":"2025-08-14","p":64.99,"ma20":66.93,"ub":71.08,"lb":62.79},{"d":"2025-08-15","p":63.78,"ma20":66.7,"ub":70.99,"lb":62.4},{"d":"2025-08-18","p":64.51,"ma20":66.5,"ub":70.82,"lb":62.18},{"d":"2025-08-19","p":63.38,"ma20":66.29,"ub":70.79,"lb":61.8},{"d":"2025-08-20","p":64.19,"ma20":66.2,"ub":70.79,"lb":61.61},{"d":"2025-08-21","p":64.56,"ma20":66.07,"ub":70.69,"lb":61.45},{"d":"2025-08-22","p":64.08,"ma20":65.95,"ub":70.65,"lb":61.26},{"d":"2025-08-25","p":65.18,"ma20":65.82,"ub":70.45,"lb":61.2},{"d":"2025-08-26","p":63.6,"ma20":65.49,"ub":69.73,"lb":61.25},{"d":"2025-08-27","p":64.49,"ma20":65.16,"ub":68.55,"lb":61.77},{"d":"2025-08-28","p":64.96,"ma20":64.89,"ub":67.29,"lb":62.48},{"d":"2025-08-29","p":64.36,"ma20":64.69,"ub":66.48,"lb":62.89},{"d":"2025-09-02","p":65.95,"ma20":64.62,"ub":66.08,"lb":63.16},{"d":"2025-09-03","p":64.36,"ma20":64.53,"ub":65.8,"lb":63.26},{"d":"2025-09-04","p":63.81,"ma20":64.45,"ub":65.69,"lb":63.21},{"d":"2025-09-05","p":62.22,"ma20":64.31,"ub":65.87,"lb":62.76},{"d":"2025-09-08","p":62.6,"ma20":64.2,"ub":65.89,"lb":62.5},{"d":"2025-09-09","p":62.97,"ma20":64.09,"ub":65.83,"lb":62.36},{"d":"2025-09-10","p":64.01,"ma20":64.08,"ub":65.82,"lb":62.35},{"d":"2025-09-11","p":62.71,"ma20":64.04,"ub":65.86,"lb":62.21},{"d":"2025-09-12","p":63.02,"ma20":63.94,"ub":65.76,"lb":62.12},{"d":"2025-09-15","p":63.66,"ma20":63.93,"ub":65.76,"lb":62.11},{"d":"2025-09-16","p":64.89,"ma20":63.95,"ub":65.81,"lb":62.09},{"d":"2025-09-17","p":64.41,"ma20":64.0,"ub":65.85,"lb":62.15},{"d":"2025-09-18","p":63.91,"ma20":63.99,"ub":65.83,"lb":62.14},{"d":"2025-09-19","p":63.02,"ma20":63.91,"ub":65.78,"lb":62.04},{"d":"2025-09-22","p":62.99,"ma20":63.86,"ub":65.77,"lb":61.94},{"d":"2025-09-23","p":63.76,"ma20":63.79,"ub":65.6,"lb":61.97},{"d":"2025-09-24","p":65.4,"ma20":63.88,"ub":65.82,"lb":61.93},{"d":"2025-09-25","p":65.51,"ma20":63.93,"ub":65.98,"lb":61.87},{"d":"2025-09-26","p":66.5,"ma20":64.0,"ub":66.31,"lb":61.7},{"d":"2025-09-29","p":64.27,"ma20":64.0,"ub":66.3,"lb":61.7},{"d":"2025-09-30","p":63.17,"ma20":63.86,"ub":66.0,"lb":61.72},{"d":"2025-10-01","p":62.59,"ma20":63.77,"ub":65.97,"lb":61.57},{"d":"2025-10-02","p":61.28,"ma20":63.64,"ub":66.1,"lb":61.19},{"d":"2025-10-03","p":61.65,"ma20":63.62,"ub":66.15,"lb":61.09},{"d":"2025-10-06","p":62.49,"ma20":63.61,"ub":66.15,"lb":61.07},{"d":"2025-10-07","p":62.52,"ma20":63.59,"ub":66.16,"lb":61.02},{"d":"2025-10-08","p":63.37,"ma20":63.56,"ub":66.12,"lb":60.99},{"d":"2025-10-09","p":62.36,"ma20":63.54,"ub":66.13,"lb":60.95},{"d":"2025-10-10","p":59.75,"ma20":63.38,"ub":66.44,"lb":60.31},{"d":"2025-10-14","p":59.52,"ma20":63.17,"ub":66.66,"lb":59.67},{"d":"2025-10-15","p":59.08,"ma20":62.88,"ub":66.7,"lb":59.05},{"d":"2025-10-16","p":58.29,"ma20":62.57,"ub":66.81,"lb":58.33},{"d":"2025-10-17","p":58.3,"ma20":62.29,"ub":66.87,"lb":57.71},{"d":"2025-10-20","p":58.34,"ma20":62.06,"ub":66.93,"lb":57.18},{"d":"2025-10-21","p":58.66,"ma20":61.84,"ub":66.91,"lb":56.77},{"d":"2025-10-22","p":59.3,"ma20":61.62,"ub":66.72,"lb":56.51},{"d":"2025-10-23","p":62.44,"ma20":61.47,"ub":66.29,"lb":56.65},{"d":"2025-10-24","p":62.27,"ma20":61.31,"ub":65.78,"lb":56.84},{"d":"2025-10-27","p":62.13,"ma20":61.09,"ub":64.9,"lb":57.27},{"d":"2025-10-28","p":60.97,"ma20":60.92,"ub":64.45,"lb":57.4},{"d":"2025-10-29","p":61.26,"ma20":60.83,"ub":64.2,"lb":57.45},{"d":"2025-10-30","p":61.36,"ma20":60.77,"ub":64.06,"lb":57.48},{"d":"2025-10-31","p":61.75,"ma20":60.79,"ub":64.1,"lb":57.48},{"d":"2025-11-03","p":61.79,"ma20":60.8,"ub":64.12,"lb":57.48},{"d":"2025-11-04","p":61.38,"ma20":60.74,"ub":63.98,"lb":57.5},{"d":"2025-11-05","p":60.4,"ma20":60.64,"ub":63.77,"lb":57.5},{"d":"2025-11-06","p":60.24,"ma20":60.48,"ub":63.36,"lb":57.6},{"d":"2025-11-07","p":60.54,"ma20":60.39,"ub":63.13,"lb":57.64},{"d":"2025-11-10","p":60.94,"ma20":60.45,"ub":63.19,"lb":57.71},{"d":"2025-11-12","p":59.3,"ma20":60.44,"ub":63.19,"lb":57.68},{"d":"2025-11-13","p":59.54,"ma20":60.46,"ub":63.18,"lb":57.74},{"d":"2025-11-14","p":60.87,"ma20":60.59,"ub":63.12,"lb":58.06},{"d":"2025-11-17","p":60.66,"ma20":60.71,"ub":63.01,"lb":58.4},{"d":"2025-11-18","p":61.51,"ma20":60.87,"ub":62.92,"lb":58.81},{"d":"2025-11-19","p":60.27,"ma20":60.95,"ub":62.76,"lb":59.13},{"d":"2025-11-20","p":60.07,"ma20":60.98,"ub":62.68,"lb":59.28},{"d":"2025-11-21","p":58.86,"ma20":60.81,"ub":62.61,"lb":59.01},{"d":"2025-11-24","p":59.11,"ma20":60.65,"ub":62.46,"lb":58.83},{"d":"2025-11-25","p":58.25,"ma20":60.45,"ub":62.41,"lb":58.49},{"d":"2025-11-26","p":58.81,"ma20":60.35,"ub":62.42,"lb":58.27},{"d":"2025-11-28","p":58.58,"ma20":60.21,"ub":62.37,"lb":58.05},{"d":"2025-12-01","p":59.47,"ma20":60.12,"ub":62.23,"lb":58.0},{"d":"2025-12-02","p":58.81,"ma20":59.97,"ub":62.02,"lb":57.92},{"d":"2025-12-03","p":59.09,"ma20":59.84,"ub":61.74,"lb":57.93},{"d":"2025-12-04","p":59.82,"ma20":59.76,"ub":61.52,"lb":57.99},{"d":"2025-12-05","p":60.23,"ma20":59.75,"ub":61.5,"lb":57.99},{"d":"2025-12-08","p":59.04,"ma20":59.69,"ub":61.46,"lb":57.92},{"d":"2025-12-09","p":58.4,"ma20":59.58,"ub":61.39,"lb":57.78},{"d":"2025-12-10","p":58.67,"ma20":59.47,"ub":61.2,"lb":57.73},{"d":"2025-12-11","p":57.76,"ma20":59.39,"ub":61.28,"lb":57.5},{"d":"2025-12-12","p":57.61,"ma20":59.29,"ub":61.33,"lb":57.26},{"d":"2025-12-15","p":56.97,"ma20":59.1,"ub":61.24,"lb":56.96},{"d":"2025-12-16","p":55.44,"ma20":58.84,"ub":61.39,"lb":56.29},{"d":"2025-12-17","p":56.07,"ma20":58.57,"ub":61.08,"lb":56.05},{"d":"2025-12-18","p":56.22,"ma20":58.36,"ub":60.95,"lb":55.78},{"d":"2025-12-19","p":56.8,"ma20":58.2,"ub":60.74,"lb":55.66},{"d":"2025-12-22","p":58.18,"ma20":58.17,"ub":60.69,"lb":55.64},{"d":"2025-12-23","p":58.55,"ma20":58.14,"ub":60.63,"lb":55.64},{"d":"2025-12-24","p":58.72,"ma20":58.16,"ub":60.67,"lb":55.65},{"d":"2025-12-26","p":56.6,"ma20":58.05,"ub":60.63,"lb":55.47},{"d":"2025-12-29","p":57.89,"ma20":58.02,"ub":60.58,"lb":55.45},{"d":"2025-12-30","p":57.79,"ma20":57.93,"ub":60.41,"lb":55.45},{"d":"2025-12-31","p":57.26,"ma20":57.86,"ub":60.32,"lb":55.39},{"d":"2026-01-02","p":57.21,"ma20":57.76,"ub":60.17,"lb":55.35},{"d":"2026-01-05","p":58.1,"ma20":57.68,"ub":59.9,"lb":55.45},{"d":"2026-01-06","p":56.97,"ma20":57.51,"ub":59.42,"lb":55.6},{"d":"2026-01-07","p":56.01,"ma20":57.36,"ub":59.24,"lb":55.48},{"d":"2026-01-08","p":57.74,"ma20":57.33,"ub":59.16,"lb":55.5},{"d":"2026-01-09","p":58.96,"ma20":57.34,"ub":59.22,"lb":55.47},{"d":"2026-01-12","p":59.39,"ma20":57.42,"ub":59.5,"lb":55.35},{"d":"2026-01-13","p":60.85,"ma20":57.59,"ub":60.14,"lb":55.03},{"d":"2026-01-14","p":61.84,"ma20":57.83,"ub":60.97,"lb":54.69},{"d":"2026-01-15","p":59.13,"ma20":58.01,"ub":61.0,"lb":55.03},{"d":"2026-01-16","p":59.4,"ma20":58.18,"ub":61.08,"lb":55.28},{"d":"2026-01-20","p":60.3,"ma20":58.38,"ub":61.28,"lb":55.49},{"d":"2026-01-21","p":60.38,"ma20":58.56,"ub":61.49,"lb":55.64},{"d":"2026-01-22","p":59.24,"ma20":58.62,"ub":61.55,"lb":55.69},{"d":"2026-01-23","p":60.7,"ma20":58.72,"ub":61.79,"lb":55.66},{"d":"2026-01-26","p":60.46,"ma20":58.81,"ub":61.97,"lb":55.65},{"d":"2026-01-27","p":62.04,"ma20":59.08,"ub":62.37,"lb":55.8},{"d":"2026-01-28","p":62.75,"ma20":59.33,"ub":62.93,"lb":55.73},{"d":"2026-01-29","p":64.77,"ma20":59.67,"ub":63.91,"lb":55.44},{"d":"2026-01-30","p":64.5,"ma20":60.04,"ub":64.61,"lb":55.47},{"d":"2026-02-02","p":61.6,"ma20":60.26,"ub":64.68,"lb":55.83},{"d":"2026-02-03","p":62.62,"ma20":60.48,"ub":64.91,"lb":56.06},{"d":"2026-02-04","p":64.56,"ma20":60.86,"ub":65.32,"lb":56.41},{"d":"2026-02-05","p":62.9,"ma20":61.21,"ub":65.14,"lb":57.27},{"d":"2026-02-06","p":63.77,"ma20":61.51,"ub":65.26,"lb":57.76},{"d":"2026-02-09","p":64.53,"ma20":61.79,"ub":65.56,"lb":58.01},{"d":"2026-02-10","p":64.2,"ma20":62.03,"ub":65.78,"lb":58.28},{"d":"2026-02-11","p":64.8,"ma20":62.22,"ub":66.12,"lb":58.33},{"d":"2026-02-12","p":63.08,"ma20":62.29,"ub":66.19,"lb":58.38},{"d":"2026-02-13","p":63.05,"ma20":62.48,"ub":66.12,"lb":58.84},{"d":"2026-02-17","p":62.53,"ma20":62.64,"ub":65.99,"lb":59.29},{"d":"2026-02-18","p":65.33,"ma20":62.89,"ub":66.26,"lb":59.52},{"d":"2026-02-19","p":66.66,"ma20":63.2,"ub":66.74,"lb":59.67},{"d":"2026-02-20","p":66.69,"ma20":63.58,"ub":66.93,"lb":60.22},{"d":"2026-02-23","p":66.36,"ma20":63.86,"ub":67.15,"lb":60.57},{"d":"2026-02-24","p":65.62,"ma20":64.12,"ub":67.1,"lb":61.14},{"d":"2026-02-25","p":65.3,"ma20":64.28,"ub":67.14,"lb":61.42},{"d":"2026-02-26","p":65.1,"ma20":64.4,"ub":67.19,"lb":61.61},{"d":"2026-02-27","p":66.96,"ma20":64.51,"ub":67.51,"lb":61.5},{"d":"2026-03-02","p":71.13,"ma20":64.84,"ub":69.01,"lb":60.67},{"d":"2026-03-03","p":74.48,"ma20":65.48,"ub":71.16,"lb":59.81},{"d":"2026-03-04","p":74.58,"ma20":66.08,"ub":72.84,"lb":59.32},{"d":"2026-03-05","p":80.88,"ma20":66.9,"ub":76.19,"lb":57.61},{"d":"2026-03-06","p":90.77,"ma20":68.29,"ub":82.05,"lb":54.53},{"d":"2026-03-09","p":94.65,"ma20":69.84,"ub":87.57,"lb":52.1},{"d":"2026-03-10","p":83.71,"ma20":70.79,"ub":89.34,"lb":52.25},{"d":"2026-03-11","p":86.8,"ma20":71.92,"ub":91.45,"lb":52.4},{"d":"2026-03-12","p":95.61,"ma20":73.46,"ub":95.23,"lb":51.7},{"d":"2026-03-13","p":98.48,"ma20":75.23,"ub":99.0,"lb":51.47},{"d":"2026-03-16","p":93.39,"ma20":76.75,"ub":101.08,"lb":52.42},{"d":"2026-03-17","p":96.01,"ma20":78.43,"ub":103.21,"lb":53.64},{"d":"2026-03-18","p":96.12,"ma20":79.97,"ub":105.13,"lb":54.8},{"d":"2026-03-19","p":96.11,"ma20":81.44,"ub":106.76,"lb":56.11},{"d":"2026-03-20","p":98.71,"ma20":83.04,"ub":108.48,"lb":57.6},{"d":"2026-03-23","p":89.33,"ma20":84.19,"ub":108.57,"lb":59.81},{"d":"2026-03-24","p":93.18,"ma20":85.56,"ub":108.67,"lb":62.46},{"d":"2026-03-25","p":91.51,"ma20":86.88,"ub":108.14,"lb":65.62},{"d":"2026-03-26","p":96.18,"ma20":88.43,"ub":107.53,"lb":69.33},{"d":"2026-03-27","p":101.26,"ma20":90.14,"ub":107.28,"lb":73.0},{"d":"2026-03-30","p":104.69,"ma20":91.82,"ub":107.71,"lb":75.93},{"d":"2026-03-31","p":102.86,"ma20":93.24,"ub":107.69,"lb":78.8},{"d":"2026-04-01","p":101.9,"ma20":94.61,"ub":106.71,"lb":82.5},{"d":"2026-04-02","p":113.23,"ma20":96.22,"ub":109.18,"lb":83.27},{"d":"2026-04-06","p":114.01,"ma20":97.39,"ub":112.21,"lb":82.57},{"d":"2026-04-07","p":114.58,"ma20":98.38,"ub":114.92,"lb":81.85},{"d":"2026-04-08","p":96.17,"ma20":99.01,"ub":114.16,"lb":83.85},{"d":"2026-04-09","p":99.62,"ma20":99.65,"ub":113.73,"lb":85.56},{"d":"2026-04-10","p":98.34,"ma20":99.78,"ub":113.76,"lb":85.81},{"d":"2026-04-13","p":100.72,"ma20":99.9,"ub":113.86,"lb":85.93}];const WTI_SUM={"cur": 100.72, "ma20": 99.9, "upper": 113.86, "lower": 85.93, "min": 55.44, "max": 114.58, "start": "2024-04-15", "end": "2026-04-13"};
+// ══ CLOCK ══
+function updateClock(){const n=new Date(),o={timeZone:'Asia/Shanghai',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'};const p={};new Intl.DateTimeFormat('zh-CN',o).formatToParts(n).forEach(x=>p[x.type]=x.value);document.getElementById('clk').textContent=`${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}:${p.second} CST`;}
+setInterval(updateClock,1000);updateClock();
+
+// ══ COUNTDOWN ══
+function calcDays(d){return Math.ceil((new Date(d)-new Date())/864e5);}
+function updateCountdowns(){document.getElementById('cd-jpy').textContent=calcDays('2025-04-28');document.getElementById('cd-us').textContent=calcDays('2025-09-30');document.getElementById('cd-deflation').textContent=calcDays('2027-01-01');}
+updateCountdowns();setInterval(updateCountdowns,6e4);
+
+// ══ UTILITY ══
+function fmt(n,d){if(n==null)return'--';return n.toLocaleString('en-US',{minimumFractionDigits:d||2,maximumFractionDigits:d||2});}
+function setPrice(pid,cid,data,prefix,d){
+  const pe=document.getElementById(pid),ce=document.getElementById(cid);
+  if(!data){pe.textContent='数据获取失败';pe.style.color='#6a8a9a';ce.textContent='请检查网络';return;}
+  pe.textContent=(prefix||'$')+fmt(data.price,d||2);
+  const s=data.chg>=0?'+':'';
+  ce.textContent=s+fmt(data.chg,d||2)+' ('+s+fmt(data.pct,2)+'%)';
+  ce.className='pc '+(data.chg>=0?'up':'dn');
+}
+
+// ══ CURRENCIES (Frankfurter.dev, ECB, CORS: access-control-allow-origin: *) ══
+async function fetchCurrencies(){
+  const fmtD=d=>d.toISOString().split('T')[0],td=new Date(),yd=new Date(td);yd.setDate(yd.getDate()-1);
+  try{
+    const[rT,rY]=await Promise.all([
+      fetch('https://api.frankfurter.dev/v1/latest?from=USD&to=JPY,EUR,GBP,CNY'),
+      fetch('https://api.frankfurter.dev/v1/'+fmtD(yd)+'?from=USD&to=JPY,EUR,GBP,CNY').catch(()=>null)
+    ]);
+    if(!rT.ok)throw new Error();
+    const dt=await rT.json(),dy=rY&&rY.ok?await rY.json():null;
+    const r=dt.rates,pr=dy?dy.rates:r;
+    return{
+      jpy:{price:r.JPY,prev:pr?.JPY||r.JPY},
+      eur:{price:1/r.EUR,prev:pr?1/pr.EUR:1/r.EUR},
+      gbp:{price:1/r.GBP,prev:pr?1/pr.GBP:1/r.GBP},
+      cny:{price:1/r.CNY,prev:pr?1/pr.CNY:1/r.CNY}
+    };
+  }catch(e){
+    try{
+      const r=(await(await fetch('https://open.er-api.com/v6/latest/USD')).json()).rates;
+      return{jpy:{price:r.JPY,prev:r.JPY},eur:{price:1/r.EUR,prev:1/r.EUR},gbp:{price:1/r.GBP,prev:1/r.GBP},cny:{price:1/r.CNY,prev:1/r.CNY}};
+    }catch(e2){return null;}
+  }
+}
+
+// ══ COMMODITIES (Stooq, free, no key, JSON endpoint) ══
+async function fetchCommodity(sym){
+  try{
+    const r=await fetch('https://stooq.com/q/l/?s='+sym+'&f=d2t2ohlcv&h&e=json',{signal:AbortSignal.timeout(8e3)});
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    if(!d.symbols||!d.symbols[0])throw new Error();
+    const i=d.symbols[0];
+    return{price:parseFloat(i.close),prev:parseFloat(i.open)};
+  }catch(e){return null;}
+}
+
+// ══ LOAD ALL MARKET DATA ══
+async function loadMarketData(){
+  const now=new Date().toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai'});
+  const[gold,silver,copper,oil]=await Promise.all([
+    fetchCommodity('gc.f'),fetchCommodity('si.f'),fetchCommodity('hg.f'),fetchCommodity('cl.f')
+  ]);
+  if(gold){const c=gold.price-gold.prev,p=c/gold.prev*100;setPrice('gold-price','gold-chg',{price:gold.price,chg:c,pct:p},'$',2);}
+  if(silver){const c=silver.price-silver.prev,p=c/silver.prev*100;setPrice('silver-price','silver-chg',{price:silver.price/100,chg:c/100,pct:p},'$',2);}
+  if(copper){const c=copper.price-copper.prev,p=c/copper.prev*100;setPrice('copper-price','copper-chg',{price:copper.price/100,chg:c/100,pct:p},'$',3);}
+  if(oil){const c=oil.price-oil.prev,p=c/oil.prev*100;setPrice('oil-price','oil-chg',{price:oil.price,chg:c,pct:p},'$',2);}
+  document.getElementById('commodity-update').textContent='更新于 '+now;
+  const cur=await fetchCurrencies();
+  if(cur){
+    const sc=(id,cur)=>{const c=cur.price-cur.prev,p=c/cur.prev*100;setPrice(id+'-price',id+'-chg',{price:cur.price,chg:c,pct:p},id==='jpy'||id==='cny'?'¥':'$',id==='jpy'||id==='cny'?2:4);};
+    sc('jpy',cur.jpy);sc('eur',cur.eur);sc('gbp',cur.gbp);sc('cny',cur.cny);
+  }else{
+    ['jpy','eur','gbp','cny'].forEach(c=>{document.getElementById(c+'-price').textContent='数据获取失败';document.getElementById(c+'-price').style.color='#6a8a9a';document.getElementById(c+'-chg').textContent='API 暂不可用';});
+  }
+  document.getElementById('currency-update').textContent='更新于 '+now;
+  document.getElementById('last-update').textContent='最后更新: '+now;
+}
+loadMarketData();setInterval(loadMarketData,3e5);
+
+// ══ GAUGE ANIMATION ══
+setTimeout(()=>{document.getElementById('needle').style.transform='rotate(57deg)';},800);
+
+// ══ ANIMATED BARS ══
+setTimeout(()=>{
+  document.querySelectorAll('.rb,.fb').forEach(bar=>{
+    const w=bar.style.width;bar.style.width='0%';
+    setTimeout(()=>{bar.style.width=w;},100);
+  });
+},300);
+
+// ══ DRAW WTI BOLLINGER BAND CHART (SVG, pure JS, 496 data points) ══
+
+// ══ ENHANCED WTI CHART (Scrollable + Hover Tooltip + Drag) ══
+function drawWTIChart(){
+  const svg=document.getElementById('wti-svg');
+  const wrap=document.getElementById('wti-chart-wrap');
+  const container=document.getElementById('wti-scroll-container');
+  const tooltip=document.getElementById('wti-tooltip');
+  const thumb=document.getElementById('wti-thumb');
+  const track=document.querySelector('.wti-scrollbar-track');
+  const crosshair=document.getElementById('wti-crosshair');
+  const data=WTI_DATA;
+  if(!svg||!data||!data.length)return;
+  const s=WTI_SUM;
+
+  // SVG chart dimensions
+  const SVG_W=1200,SVG_H=300;
+  const P={t:25,r:15,b:38,l:60};
+  const cW=SVG_W-P.l-P.r,cH=SVG_H-P.t-P.b;
+
+  // Y range from data
+  const allV=[...data.map(d=>d.ub).filter(Boolean),...data.map(d=>d.lb).filter(Boolean)];
+  const yMin=Math.floor(Math.min(...allV)/5)*5-5;
+  const yMax=Math.ceil(Math.max(...allV)/5)*5+5;
+  const yRange=yMax-yMin;
+  const xS=i=>P.l+i/(data.length-1)*cW;
+  const yS=v=>P.t+cH-(v-yMin)/yRange*cH;
+
+  // Build paths
+  let pricePath='',areaPath='M '+P.l+','+(P.t+cH),ubPath='',lbPath='';
+  data.forEach((d,i)=>{
+    const x=xS(i),y=yS(d.p);
+    pricePath+=(i===0?'M ':'L')+x.toFixed(1)+','+y.toFixed(1);
+    areaPath+=' L'+x.toFixed(1)+','+y.toFixed(1);
+    if(d.ub!=null)ubPath+=(ubPath?' L':'M')+x.toFixed(1)+','+yS(d.ub).toFixed(1);
+    if(d.lb!=null)lbPath=(lbPath?' L':'M')+x.toFixed(1)+','+yS(d.lb).toFixed(1);
+  });
+  areaPath+=' L'+(xS(data.length-1)).toFixed(1)+','+(P.t+cH)+' Z';
+
+  // BB fill path
+  const ubPts=data.filter(d=>d.ub!=null).map((d,i)=>[xS(i),yS(d.ub)]);
+  const lbPts=[...data.filter(d=>d.lb!=null).map((d,i)=>[xS(i),yS(d.lb)])].reverse();
+  let bbFill='';
+  if(ubPts.length&&lbPts.length){
+    bbFill='M '+ubPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L');
+    bbFill+=' L'+lbPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L');
+    bbFill+=' Z';
+  }
+
+  // Grid lines
+  let grid='',gridN=6;
+  for(let i=0;i<=gridN;i++){
+    const v=yMin+(yRange/gridN)*i,y=yS(v);
+    grid+='<line x1="'+P.l+'" y1="'+y.toFixed(1)+'" x2="'+(SVG_W-P.r)+'" y2="'+y.toFixed(1)+'" stroke="rgba(30,45,58,0.6)" stroke-width="0.5" stroke-dasharray="3,4"/>';
+    grid+='<text x="'+(P.l-4)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">$'+Math.round(v)+'</text>';
+  }
+
+  // X labels (quarterly)
+  let xL='',lastM='';
+  data.forEach((d,i)=>{
+    const m=d.d.substring(0,7);
+    if(m!==lastM&&(i===0||m.substring(0,4)!==data[i-1].d.substring(0,4)||parseInt(m.substring(5,7))%3===1)){
+      lastM=m;
+      xL+='<text x="'+(xS(i)).toFixed(1)+'" y="'+(SVG_H-10)+'" text-anchor="middle" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">'+d.d.substring(2,4)+'/'+d.d.substring(5,7)+'</text>';
+    }
+  });
+
+  // Iran marker
+  const iranX=xS(0);
+  // Current price dot
+  const last=data[data.length-1],lastX=xS(data.length-1),lastY=yS(last.p);
+  const prevD=data[data.length-2],prevY=yS(prevD.p),curUp=last.p>prevD.p;
+  // Price hover dots (invisible, for hit testing)
+  let priceDots='';
+  data.forEach((d,i)=>{
+    const x=xS(i),y=yS(d.p);
+    priceDots+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="6" fill="transparent" data-idx="'+i+'" class="wti-dot" cursor="crosshair"/>';
+  });
+
+  // Y-axis label
+  const yAxisLabel='<text transform="rotate(-90)" x="'+-((P.t+cH/2)).toFixed(1)+'" y="12" text-anchor="middle" fill="#6a8a9a" font-size="9" font-family="Space Mono,monospace">美元/桶 ($/bbl)</text>';
+  // Last price label
+  const lastLabelX=Math.max(lastX-80,8);
+  const lastLabel='<text x="'+(lastLabelX).toFixed(1)+'" y="'+(lastY-10).toFixed(1)+'" text-anchor="start" fill="'+(curUp?'#ff3b5c':'#00e5a0')+'" font-size="10" font-family="Space Mono,monospace" font-weight="700">$'+s.cur.toFixed(2)+'</text>';
+
+  svg.innerHTML='<defs><linearGradient id="og" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5a623" stop-opacity="0.12"/><stop offset="100%" stop-color="#f5a623" stop-opacity="0.01"/></linearGradient><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff3b5c" stop-opacity="0.08"/><stop offset="50%" stop-color="#ff3b5c" stop-opacity="0.03"/><stop offset="100%" stop-color="#ff3b5c" stop-opacity="0.08"/></linearGradient><filter id="gl"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'+
+    grid+xL+
+    '<path d="'+bbFill+'" fill="url(#bg)"/>'+
+    '<path d="'+ubPath+'" fill="none" stroke="rgba(255,59,92,0.5)" stroke-width="1.2" stroke-dasharray="5,3"/>'+
+    '<path d="'+lbPath+'" fill="none" stroke="rgba(255,59,92,0.5)" stroke-width="1.2" stroke-dasharray="5,3"/>'+
+    '<path d="'+areaPath+'" fill="url(#og)"/>'+
+    '<path d="'+pricePath+'" fill="none" stroke="#f5a623" stroke-width="1.8" stroke-linejoin="round" filter="url(#gl)"/>'+
+    '<line x1="'+iranX.toFixed(1)+'" y1="'+P.t+'" x2="'+iranX.toFixed(1)+'" y2="'+(P.t+cH)+'" stroke="rgba(255,59,92,0.6)" stroke-width="1" stroke-dasharray="3,3"/>'+
+    '<rect x="'+(iranX-2).toFixed(1)+'" y="'+P.t+'" width="4" height="4" fill="#ff3b5c"/>'+
+    '<text x="'+(iranX+4).toFixed(1)+'" y="'+(P.t+12)+'" fill="#ff3b5c" font-size="8" font-family="Space Mono,monospace">伊朗开战</text>'+
+    '<text x="'+(iranX+4).toFixed(1)+'" y="'+(P.t+22)+'" fill="#ff3b5c" font-size="8" font-family="Space Mono,monospace">2024-04-15</text>'+
+    priceDots+
+    '<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="4" fill="'+(curUp?'#ff3b5c':'#00e5a0')+'" stroke="#080c0f" stroke-width="1"/><circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="7" fill="none" stroke="'+(curUp?'#ff3b5c':'#00e5a0')+'" stroke-width="0.8" opacity="0.4"/>'+
+    yAxisLabel+lastLabel;
+
+  // Update meta display
+  const bw=(s.upper-s.lower).toFixed(2);
+  const dev=((s.cur-s.ma20)/s.ma20*100).toFixed(2);
+  const devN=parseFloat(dev);
+  document.getElementById('wti-cur').textContent='$'+s.cur.toFixed(2);
+  const curEl=document.getElementById('wti-cur');
+  if(last.p>s.upper)curEl.textContent+=' ▲ 超买';else if(last.p<s.lower)curEl.textContent+=' ▼ 超卖';else curEl.textContent+=' 通道内';
+  curEl.style.color=last.p>s.upper?'var(--r)':last.p<s.lower?'var(--g)':'var(--a)';
+  document.getElementById('wti-ma20').textContent='$'+s.ma20.toFixed(2);
+  document.getElementById('wti-ub').textContent='$'+s.upper.toFixed(2);
+  document.getElementById('wti-lb').textContent='$'+s.lower.toFixed(2);
+  document.getElementById('wti-bw').textContent='$'+bw;
+  const devEl=document.getElementById('wti-dev');
+  devEl.textContent=(devN>=0?'+':'')+dev+'%';
+  devEl.style.color=devN>=0?'var(--r)':'var(--g)';
+  document.getElementById('wti-max').textContent='$'+s.max.toFixed(2);
+  document.getElementById('wti-min').textContent='$'+s.min.toFixed(2);
+  document.getElementById('wti-range').textContent=s.start+' ~ '+s.end;
+  document.getElementById('wti-note').textContent='最后更新: '+s.end+' · EIA官方数据';
+
+  // ══ SCROLL + DRAG LOGIC ══
+  const svgW=SVG_W;
+  const viewW=container.offsetWidth||600;
+  const ratio=Math.min(1,viewW/svgW);
+  const thumbW=Math.max(60,Math.round(ratio*viewW));
+  const maxScroll=svgW-thumbW;
+  let scrollX=0;
+  let isDragging=false,dragStartX=0,dragStartScroll=0;
+  let isThumbDrag=false,thumbStartX=0,thumbStartScroll=0;
+
+  function updateView(sx){
+    scrollX=Math.max(0,Math.min(maxScroll,sx));
+    const pct=scrollX/maxScroll;
+    svg.style.transform='translateX('+(-scrollX).toFixed(1)+'px)';
+    svg.style.transition='none';
+    thumb.style.left=scrollX.toFixed(1)+'px';
+  }
+  function updateViewSmooth(sx){
+    scrollX=Math.max(0,Math.min(maxScroll,sx));
+    const pct=scrollX/maxScroll;
+    svg.style.transform='translateX('+(-scrollX).toFixed(1)+'px)';
+    thumb.style.left=scrollX.toFixed(1)+'px';
+  }
+
+  // Init thumb width
+  thumb.style.width=thumbW+'px';
+  thumb.style.maxWidth=(svgW/4)+'px';
+  updateView(maxScroll); // Start showing latest data
+
+  // Thumb drag
+  thumb.addEventListener('mousedown',(e)=>{e.preventDefault();isThumbDrag=true;thumbStartX=e.clientX;thumbStartScroll=scrollX;document.body.style.cursor='grabbing'});
+  // Track click to jump
+  track.addEventListener('click',(e)=>{if(e.target===thumb)return;const rect=track.getBoundingClientRect();const clickX=e.clientX-rect.left;const newScroll=(clickX/thumbW)*maxScroll;updateViewSmooth(newScroll)});
+  // Mouse drag on chart
+  container.addEventListener('mousedown',(e)=>{if(e.target.classList.contains('wti-dot')||e.target===svg){isDragging=true;dragStartX=e.clientX;dragStartScroll=scrollX;container.style.cursor='grabbing'}});
+
+  document.addEventListener('mousemove',(e)=>{
+    if(isThumbDrag){
+      const dx=e.clientX-thumbStartX;
+      updateView(thumbStartScroll+dx*(svgW/rect.width));
+    }else if(isDragging){
+      const dx=e.clientX-dragStartX;
+      updateView(dragStartScroll-dx*(svgW/viewW));
+    }
+  });
+  document.addEventListener('mouseup',()=>{isDragging=false;isThumbDrag=false;document.body.style.cursor='';container.style.cursor='crosshair'});
+
+  // Mouse wheel scroll
+  container.addEventListener('wheel',(e)=>{e.preventDefault();const step=30;updateView(scrollX+(e.deltaX||e.deltaY)*step)},{passive:false});
+
+  // ══ HOVER PRICE TOOLTIP ══
+  let hoverIdx=-1;
+  const svgEl=document.getElementById('wti-svg');
+
+  function getDataIdxFromEvent(e){
+    const rect=container.getBoundingClientRect();
+    const relX=e.clientX-rect.left;
+    // Adjust for scroll position
+    const chartX=relX+scrollX;
+    const ratio2=chartX/(svgW);
+    const idx=Math.round(ratio2*(data.length-1));
+    return Math.max(0,Math.min(data.length-1,idx));
+  }
+
+  function showTooltip(idx,e){
+    const d=data[idx];
+    if(!d)return;
+    const rect=container.getBoundingClientRect();
+    const relX=e.clientX-rect.left;
+    const absX=relX+scrollX;
+    const svgRatio=absX/svgW;
+    // Position tooltip
+    const tooltipX=Math.min(relX,viewW-140);
+    const tooltipY=5;
+    tooltip.style.left=Math.max(5,tooltipX)+'px';
+    tooltip.style.top=tooltipY+'px';
+    tooltip.style.display='block';
+    // Position crosshair
+    crosshair.style.display='block';
+    crosshair.style.left=(relX)+'px';
+    // Update values
+    document.getElementById('wti-tt-date').textContent=d.d;
+    document.getElementById('wti-tt-price').textContent='$'+d.p.toFixed(2);
+    document.getElementById('wti-tt-ma').textContent=d.ma20!=null?'$'+d.ma20.toFixed(2):'--';
+    document.getElementById('wti-tt-ub').textContent=d.ub!=null?'$'+d.ub.toFixed(2):'--';
+    document.getElementById('wti-tt-lb').textContent=d.lb!=null?'$'+d.lb.toFixed(2):'--';
+    // Position label
+    const pct=((d.p-yMin)/yRange*100).toFixed(1);
+    document.getElementById('wti-tt-pos').textContent='均线偏离: '+((d.p-(d.ma20||0))/(d.ma20||1)*100).toFixed(1)+'%';
+    const priceEl=document.getElementById('wti-tt-price');
+    priceEl.style.color=d.p>s.upper?'var(--r)':d.p<s.lower?'var(--g)':'var(--a)';
+    hoverIdx=idx;
+  }
+
+  function hideTooltip(){
+    tooltip.style.display='none';
+    crosshair.style.display='none';
+    hoverIdx=-1;
+  }
+
+  container.addEventListener('mousemove',(e)=>{
+    const idx=getDataIdxFromEvent(e);
+    if(idx!==hoverIdx)showTooltip(idx,e);
+  });
+  container.addEventListener('mouseleave',hideTooltip);
+  // Also show on thumb/dot hover
+  svg.querySelectorAll('.wti-dot').forEach(dot=>{
+    dot.addEventListener('mouseenter',(e)=>{
+      const idx=parseInt(dot.getAttribute('data-idx'));
+      showTooltip(idx,e);
+    });
+  });
+}
+
+</script>
+</body>
+</html>
